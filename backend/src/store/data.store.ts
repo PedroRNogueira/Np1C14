@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { StoreData } from "../types/index.js";
 
-const DATA_FILE = path.resolve("data.json");
+const DATA_FILE = path.resolve(__dirname, "../../data.json");
 
 const ROWS = ["A", "B", "C", "D", "E", "F"];
 const COLS = 8;
