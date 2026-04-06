@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -77,14 +80,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: test-results
+          path: release-assets/test-results
       - name: Download frontend-dist
         uses: actions/download-artifact@v4
         with:
           name: frontend-dist
+          path: release-assets/frontend-dist
       - name: Download backend-package
         uses: actions/download-artifact@v4
         with:
           name: backend-package
+          path: release-assets/backend-package
+      - name: Pack release assets
+        run: |
+          tar -czf release-assets/test-results.tar.gz -C release-assets test-results
+          tar -czf release-assets/frontend-dist.tar.gz -C release-assets frontend-dist
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -95,13 +105,13 @@ jobs:
             Release automatado gerado pelo pipeline de CI/CD.
 
             Artifacts anexados:
-            - test-results: cobertura de testes do backend
-            - frontend-dist: build estatico do frontend
-            - backend-package: backend validado e empacotado
+            - test-results.tar.gz: cobertura de testes do backend
+            - frontend-dist.tar.gz: build estatico do frontend
+            - backend-package.tar.gz: backend validado e empacotado
           files: |
-            test-results/.
-            frontend-dist/.
-            backend-package.tar.gz
+            release-assets/test-results.tar.gz
+            release-assets/frontend-dist.tar.gz
+            release-assets/backend-package/backend-package.tar.gz
 
   notify:
     needs: [test, build, deploy]
