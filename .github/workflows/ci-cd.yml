@@ -1,0 +1,128 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: backend
+      - name: Run backend tests
+        run: npx vitest run --coverage
+        working-directory: backend
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: backend/coverage/
+          retention-days: 7
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: backend
+      - name: Validate backend
+        run: npx tsc --noEmit
+        working-directory: backend
+      - name: Create backend package
+        run: tar czf backend-package.tar.gz --exclude=node_modules --exclude=tests --exclude=.gitignore --exclude=coverage .
+        working-directory: backend
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+          retention-days: 7
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-package
+          path: backend/backend-package.tar.gz
+          retention-days: 7
+
+  deploy:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download test-results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+      - name: Download frontend-dist
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+      - name: Download backend-package
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-package
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0-ci
+          name: v1.0.0-ci - Pipeline Build
+          prerelease: true
+          body: |
+            Release automatado gerado pelo pipeline de CI/CD.
+
+            Artifacts anexados:
+            - test-results: cobertura de testes do backend
+            - frontend-dist: build estatico do frontend
+            - backend-package: backend validado e empacotado
+          files: |
+            test-results/.
+            frontend-dist/.
+            backend-package.tar.gz
+
+  notify:
+    needs: [test, build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+    steps:
+      - name: Consolidate pipeline status
+        id: status
+        run: |
+          TEST_RESULT="${{ needs.test.result }}"
+          BUILD_RESULT="${{ needs.build.result }}"
+          DEPLOY_RESULT="${{ needs.deploy.result }}"
+          if [ "$TEST_RESULT" = "success" ] && [ "$BUILD_RESULT" = "success" ] && [ "$DEPLOY_RESULT" = "success" ]; then
+            STATUS="success"
+          elif [ "$TEST_RESULT" = "failure" ] || [ "$BUILD_RESULT" = "failure" ] || [ "$DEPLOY_RESULT" = "failure" ]; then
+            STATUS="failure"
+          else
+            STATUS="cancelled"
+          fi
+          echo "consolidated=${STATUS}" >> "$GITHUB_OUTPUT"
+          echo "test=${TEST_RESULT}" >> "$GITHUB_OUTPUT"
+          echo "build=${BUILD_RESULT}" >> "$GITHUB_OUTPUT"
+          echo "deploy=${DEPLOY_RESULT}" >> "$GITHUB_OUTPUT"
+      - name: Send webhook notification
+        if: env.WEBHOOK_URL != ''
+        run: |
+          curl -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d '{"project":"cinema-app","status":"${{ steps.status.outputs.consolidated }}","test":"${{ steps.status.outputs.test }}","build":"${{ steps.status.outputs.build }}","deploy":"${{ steps.status.outputs.deploy }}"}'
