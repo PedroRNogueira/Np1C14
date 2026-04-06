@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getSeats, getTicketStatus, claimTicketReq, reserveSeatReq } from "../api/client";
 import SeatMap from "../components/SeatMap";
@@ -14,25 +14,22 @@ export default function CinemaPage() {
 
   useEffect(() => {
     loadSeats();
-    if (user) {
-      loadTicketStatus();
-    }
   }, []);
 
   useEffect(() => {
     if (user) loadTicketStatus();
   }, [user]);
 
-  async function loadSeats() {
+  const loadSeats = async () => {
     try {
       const data = await getSeats();
       setSeats(data);
     } catch {
       setErrorMsg("Erro ao carregar poltronas.");
     }
-  }
+  };
 
-  async function loadTicketStatus() {
+  const loadTicketStatus = async () => {
     if (!user) return;
     try {
       const status = await getTicketStatus(user.id);
@@ -40,7 +37,7 @@ export default function CinemaPage() {
     } catch {
       setHasTicket(false);
     }
-  }
+  };
 
   async function handleGetTicket() {
     if (!user) return;
@@ -55,8 +52,9 @@ export default function CinemaPage() {
     }
   }
 
-  async function handleReserve(seatId: string) {
-    if (!user || !hasTicket) return;
+  async function handleSeatClick(seatId: string) {
+    if (!user) return;
+
     if (selectedSeat === seatId) {
       setSelectedSeat(null);
       try {
@@ -67,10 +65,29 @@ export default function CinemaPage() {
       } catch {
         setErrorMsg("Erro ao reservar poltrona.");
         loadSeats();
-        loadTicketStatus();
+        if (user) loadTicketStatus();
       }
-    } else {
+      return;
+    }
+
+    if (!selectedSeat) {
       setSelectedSeat(seatId);
+      return;
+    }
+
+    if (hasTicket) {
+      setSelectedSeat(null);
+      setSuccessMsg("");
+      try {
+        await reserveSeatReq(seatId, user.id);
+        setHasTicket(false);
+        setSuccessMsg("Poltrona reservada!");
+        loadSeats();
+      } catch {
+        setErrorMsg("Erro ao reservar poltrona.");
+        loadSeats();
+        if (user) loadTicketStatus();
+      }
     }
   }
 
@@ -101,7 +118,7 @@ export default function CinemaPage() {
         {successMsg && <p className="success-msg">{successMsg}</p>}
 
         <Screen />
-        <SeatMap seats={seats} selectedId={selectedSeat} onSeatClick={handleReserve} />
+        <SeatMap seats={seats} selectedId={selectedSeat} onSeatClick={handleSeatClick} />
 
         <div className="legend">
           <div className="legend-item">

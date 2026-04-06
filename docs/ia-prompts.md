@@ -117,6 +117,7 @@
 - Criar testes unitários correspondentes (20 testes: 7 auth, 6 ticket, 7 seat)
 - Sem rotas, sem frontend, sem workflow
 - Commits separados por responsabilidade, publicados no remoto
+- Regra fixa: commits pequenos, por responsabilidade, sempre publicados no remoto com verificação de hash
 
 **Resposta da IA:**
 - Implementou `auth.service.ts` com register (validação username/password único) e login (credenciais diretas)
@@ -127,10 +128,10 @@
 
 **Ajuste de commits:**
 - Commit original genérico `e9cca12` foi reescrito em 4 commits coesos:
-  - `a67fdf5 refactor(store): adiciona resetStore para isolar testes unitários`
-  - `368afdb feat(auth): implementa registro, login e testes unitários`
-  - `63aa5b5 feat(ticket): implementa claim, status, consumo e testes unitários`
-  - `4766eb1 feat(seat): implementa listagem, reserva e testes unitários`
+  - `a67fdf5` refactor(store): adiciona resetStore para isolar testes unitários
+  - `368afdb` feat(auth): implementa registro, login e testes unitários
+  - `63aa5b5` feat(ticket): implementa claim, status, consumo e testes unitários
+  - `4766eb1` feat(seat): implementa listagem, reserva e testes unitários
 - Push com `--force-with-lease` — hashes local e remoto verificados e iguais
 
 **Resultado:** 20 testes passando. 4 commits publicados e visíveis no GitHub web.
@@ -143,12 +144,41 @@
 - Criar rotas HTTP para auth, ticket e seat
 - Criar servidor Express integrado
 - Manter simples, sem auth complexa, sem frontend nesta etapa
+- Commits separados por responsabilidade, publicados no remoto
 
 **Resposta da IA:**
 - Criou `auth.routes.ts`: POST `/api/auth/register` (201/400/409), POST `/api/auth/login` (200/401)
 - Criou `ticket.routes.ts`: GET `/api/ticket/status` (200), POST `/api/ticket/claim` (201/400/404)
 - Criou `seat.routes.ts`: GET `/api/seats` (200), POST `/api/seats/:id/reserve` (200/400/404)
 - Criou `index.ts`: Express na porta 3001 com CORS e JSON parsing
-- 4 commits separados, todos publicados no remoto com verificação de hash
+- 5 commits separados (3 rotas + 1 server + 1 docs), todos publicados no remoto com verificação de hash
 
-**Resultado:** API REST funcional. 6 rotas expostas. 20 testes ainda passando.
+**Resultado:** API REST funcional com 6 rotas. 20 testes ainda passando.
+
+---
+
+## Etapa 4 — Frontend Base + Integração com Backend (2026-04-06)
+
+**Pedido do usuário:**
+- Criar estrutura inicial do frontend em React + TypeScript + Vite
+- Páginas: LoginPage, RegisterPage, CinemaPage
+- Componentes: SeatMap, Seat, Screen
+- Camada de API para consumir o backend
+- Integrar cadastro, login, pegar ticket, listar poltronas, reservar poltrona
+- Login simples com `{ id, username }` salvo em localStorage
+- Visual dark theme premium com vermelho como cor principal
+- Referência visual usada como base estética apenas (adaptada ao escopo real)
+- Sem elementos da referência que não fazem parte do projeto (VIP, preço, filme, etc.)
+- Commits pequenos separados por responsabilidade, publicados no remoto
+
+**Resposta da IA:**
+- Criou estrutura: index.html, package.json, tsconfig.json, vite.config.ts
+- Criou `main.tsx`, `App.tsx` com roteamento por estado
+- Criou `AuthContext.tsx` com login/logout/localStorage
+- Criou `api/client.ts` com fetch wrapper para todas as 6 rotas da API
+- Criou `LoginPage` e `RegisterPage` com card escuro, botão vermelho, campos username/password
+- Criou `CinemaPage` com header, botão "Pegar ticket", SeatMap, Screen, legenda de cores
+- Criou `Seat` (botão com 3 estados visuais), `SeatMap` (grid 6x8), `Screen` (faixa TELA)
+- Criou `global.css` com dark theme premium: dark background, vermelho primário, inputs estilizados
+
+**Resultado:** Frontend completo integrado com backend. 3 commits publicados no remoto.
