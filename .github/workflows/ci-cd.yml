@@ -47,16 +47,10 @@ jobs:
         working-directory: backend
       - name: Create backend package
         run: |
-          mkdir -p /tmp/backend-pkg
-          cp -r \
-            src/ \
-            package.json \
-            package-lock.json \
-            tsconfig.json \
-            vitest.config.ts \
-            data.json \
-            /tmp/backend-pkg/
-          tar czf backend-package.tar.gz -C /tmp backend-pkg
+          mkdir -p backend-package/src
+          cp package.json package-lock.json tsconfig.json vitest.config.ts backend-package/
+          cp -r src/* backend-package/src/
+          tar czf backend-package.tar.gz backend-package
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
