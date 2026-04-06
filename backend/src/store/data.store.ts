@@ -52,3 +52,9 @@ export function getStore(): StoreData {
 export function saveStore(): void {
   saveToFile(store);
 }
+
+export function resetStore(): void {
+  store.users = [];
+  store.tickets = [];
+  store.seats = generateSeats();
+}
