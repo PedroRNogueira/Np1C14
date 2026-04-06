@@ -70,3 +70,37 @@
 - `docs/ia-prompts.md` — registro de todos os prompts e respostas da IA
 - `docs/devlog.md` — este arquivo
 - `docs/estrutura-do-projeto.md` — árvore de pastas e descrições
+
+---
+
+## 2026-04-06 — Etapa 2: Implementação de Services e Testes
+
+### Implementado
+- **`auth.service.ts`** — register com validação de vazio/duplicado; login por comparação direta de senha
+- **`ticket.service.ts`** — claimTicket (valida existência de user e ticket), hasTicket, consumeTicket
+- **`seat.service.ts`** — getAllSeats (retorna 48), reserveSeat (valida user, seat, status, ticket; consome ticket ao reservar)
+- **`data.store.ts`** — adicionada função `resetStore()` para isolar testes unitários
+
+### Testes criados
+- `tests/auth.test.ts` — 7 testes: register válido, IDs únicos, duplicado, vazio×2, login válido, login inválido
+- `tests/ticket.test.ts` — 6 testes: claim, hasTicket true/false, duplicado, user inexistente
+- `tests/seat.test.ts` — 7 testes: 48 livres, reserva com ticket, consume ticket, re-claim após consumo, sem ticket, ocupada, invalid seat
+
+### Resultado dos testes
+20/20 passando. Duração ~340ms.
+
+### Problema e Resolução
+**Problema:** Commit inicial `e9cca12` agrupou todos os 7 arquivos em uma única mensagem genérica "etapa 2".
+**Resolução:** `git reset --soft` para desfazer o commit, remontagem em 4 commits coesos por módulo, push com `--force-with-lease`.
+**Regra criada:** commits devem ser pequenos, por responsabilidade, sempre publicados no remoto com verificação de hash.
+
+### Commits da Etapa 2
+
+| Hash | Mensagem |
+|------|----------|
+| `a67fdf5` | `refactor(store): adiciona resetStore para isolar testes unitários` |
+| `368afdb` | `feat(auth): implementa registro, login e testes unitários` |
+| `63aa5b5` | `feat(ticket): implementa claim, status, consumo e testes unitários` |
+| `4766eb1` | `feat(seat): implementa listagem, reserva e testes unitários` |
+
+Todos publicados em `origin/main` com hashes verificados.

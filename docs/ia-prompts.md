@@ -106,4 +106,31 @@
 - Moveu `.git` para raiz, trouxe `backend/` para raiz, removeu `Np1C14/`
 - Criou 3 documentos retroativos
 
-**Resultado:** Projeto reorganizado e documentado.
+**Resultado:** Projeto reorganizado e documentado. Commit `ba83232`.
+
+---
+
+## Etapa 2 — Services e Testes Unitários (2026-04-06)
+
+**Pedido do usuário:**
+- Implementar lógica real de `auth.service.ts`, `ticket.service.ts`, `seat.service.ts`
+- Criar testes unitários correspondentes (20 testes: 7 auth, 6 ticket, 7 seat)
+- Sem rotas, sem frontend, sem workflow
+- Commits separados por responsabilidade, publicados no remoto
+
+**Resposta da IA:**
+- Implementou `auth.service.ts` com register (validação username/password único) e login (credenciais diretas)
+- Implementou `ticket.service.ts` com claimTicket, hasTicket, consumeTicket
+- Implementou `seat.service.ts` com getAllSeats e reserveSeat (validações: usuário existe, seat existe, não ocupado, tem ticket)
+- Adicionou `resetStore()` em `data.store.ts` para isolar testes
+- Criou 3 arquivos de teste com Vitest — 20 testes, todos passando
+
+**Ajuste de commits:**
+- Commit original genérico `e9cca12` foi reescrito em 4 commits coesos:
+  - `a67fdf5 refactor(store): adiciona resetStore para isolar testes unitários`
+  - `368afdb feat(auth): implementa registro, login e testes unitários`
+  - `63aa5b5 feat(ticket): implementa claim, status, consumo e testes unitários`
+  - `4766eb1 feat(seat): implementa listagem, reserva e testes unitários`
+- Push com `--force-with-lease` — hashes local e remoto verificados e iguais
+
+**Resultado:** 20 testes passando. 4 commits publicados e visíveis no GitHub web.

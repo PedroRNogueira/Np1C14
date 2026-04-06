@@ -13,18 +13,18 @@ NP1C14/
 │   ├── src/
 │   │   ├── index.ts               # Entry point, servidor Express (a criar)
 │   │   ├── routes/                # Rotas HTTP (a criar)
-│   │   ├── services/              # Regras de negócio (implementar)
-│   │   │   ├── auth.service.ts    # Cadastro e login
-│   │   │   ├── ticket.service.ts  # Claim e status de ticket
-│   │   │   └── seat.service.ts    # Mapa e reserva de poltronas
+│   │   ├── services/              # Regras de negócio (implementado)
+│   │   │   ├── auth.service.ts    # Cadastro e login ✅
+│   │   │   ├── ticket.service.ts  # Claim e status de ticket ✅
+│   │   │   └── seat.service.ts    # Mapa e reserva de poltronas ✅
 │   │   ├── store/
 │   │   │   └── data.store.ts      # Persistência em memória + data.json
 │   │   └── types/
 │   │       └── index.ts           # Interfaces TypeScript
 │   ├── tests/
-│   │   ├── auth.test.ts           # Testes unitários de auth (a criar)
-│   │   ├── ticket.test.ts         # Testes unitários de ticket (a criar)
-│   │   └── seat.test.ts           # Testes unitários de seat (a criar)
+│   │   ├── auth.test.ts           # Testes unitários de auth ✅
+│   │   ├── ticket.test.ts         # Testes unitários de ticket ✅
+│   │   └── seat.test.ts           # Testes unitários de seat ✅
 │   ├── data.json                  # Persistência local (gerado em runtime)
 │   ├── package.json               # Dependências do backend
 │   ├── tsconfig.json              # Configuração TypeScript
