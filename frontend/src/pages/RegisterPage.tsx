@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { register } from "../api/client";
+import { registerReq } from "../api/client";
 
 interface RegisterPageProps {
   onGoToLogin: () => void;
@@ -14,7 +14,7 @@ export default function RegisterPage({ onGoToLogin }: RegisterPageProps) {
     e.preventDefault();
     setError("");
     try {
-      await register(username, password);
+      await registerReq(username, password);
       onGoToLogin();
     } catch {
       setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
