@@ -46,7 +46,13 @@ jobs:
         run: npx tsc --noEmit
         working-directory: backend
       - name: Create backend package
-        run: tar czf backend-package.tar.gz --exclude=node_modules --exclude=tests --exclude=.gitignore --exclude=coverage .
+        run: |
+          tar czf ../backend-package.tar.gz \
+            --exclude=node_modules \
+            --exclude=tests \
+            --exclude=.gitignore \
+            --exclude=coverage \
+            .
         working-directory: backend
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
@@ -58,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-package
-          path: backend/backend-package.tar.gz
+          path: backend-package.tar.gz
           retention-days: 7
 
   deploy:
