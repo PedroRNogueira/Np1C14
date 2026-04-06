@@ -240,15 +240,6 @@ Pipeline CI/CD funcional com 4/4 jobs verdes: test ✅, build ✅, deploy ✅, n
 
 ---
 
-## 2026-04-06 — Pendências futuras
-
-### README principal
-- `README.md` na raiz ainda não foi criado
-- Deve conter: explicação do projeto, como rodar, como testar, como funciona o pipeline, prompts de IA utilizados e avaliação do resultado
-- Será criado em etapa futura
-
----
-
 ## 2026-04-06 — Ajustes da Etapa 5: Release e permissões
 
 ### Permissões do workflow
@@ -262,5 +253,34 @@ Pipeline CI/CD funcional com 4/4 jobs verdes: test ✅, build ✅, deploy ✅, n
   - `release-assets/frontend-dist.tar.gz`
   - `release-assets/backend-package/backend-package.tar.gz`
 
+### Correção final do empacotamento do backend
+- Múltiplas iterações até o `tar` do backend funcionar no runner Ubuntu
+- Versão final: `tar czf backend-package.tar.gz -C backend src package.json package-lock.json tsconfig.json`
+- Hash: `54164fa` — run #13 do GitHub Actions, 4/4 jobs verdes
+- Pipeline validado via API do GitHub (`conclusion: success`)
+
 ### Resultado final da Etapa 5
 Release `v1.0.0-ci` criada com sucesso no GitHub, contendo os 3 artifacts em formato `.tar.gz`. Pipeline com 4/4 jobs verdes: `test` ✅, `build` ✅, `deploy` ✅, `notify` ✅.
+
+---
+
+## 2026-04-06 — Etapa 6: Documentação Final
+
+### Criado
+- **`README.md`** — Guia completo do projeto na raiz do repositório:
+  - Objetivo e funcionalidades
+  - Resumo da arquitetura
+  - Explicação de todas as pastas
+  - Pré-requisitos e passos para rodar (backend + frontend)
+  - Guia de teste prático passo a passo para o professor
+  - Instruções de testes unitários
+  - Explicação do CI/CD em alto nível
+  - Observações sobre limitações intencionais
+
+### Atualizado
+- **`docs/devlog.md`** — Registro da Etapa 5 completa, incluindo validação final e correções do pipeline
+- **`docs/ia-prompts.md`** — Registro completo da Etapa 5 com correções e validação
+- **`docs/estrutura-do-projeto.md`** — Sincronizado com arquivos existentes, removidos marcadores "a criar"
+
+### Resultado
+Documentação completa e coerente. Repositório pronto para avaliação.

@@ -216,3 +216,49 @@
 - Conferir hash local = remoto após cada push
 
 **Resultado final:** Pipeline com 4/4 jobs verdes (test, build, deploy, notify). Release `v1.0.0-ci` criada com 3 artifacts. Documentação atualizada em todos os arquivos de `docs/`.
+
+---
+
+## Etapa 5.1 — Correções do CI/CD até Pipeline Verde (2026-04-06)
+
+### Correções aplicadas durante a etapa
+
+1. **Import incorreto** (`RegisterPage.tsx` importava `register` em vez de `registerReq`) — falha no build do frontend
+
+2. **Empacotamento do backend** — `tar` com `--exclude` dentro de `backend/` falhava no runner. Solução: copiar arquivos para `/tmp/backend-pkg/` e gerar tar sem excludes. Aplicado em múltiplos commits até estabilizar
+
+3. **Permissão da release** — erro `Resource not accessible by integration`. Adicionado `permissions: contents: write` no topo do workflow
+
+4. **Anexos da release** — paths como `test-results/.` não apontavam arquivos. Solução: baixar em `release-assets/`, compactar em `.tar.gz`, anexar arquivos reais
+
+5. **Simplificação do tar do backend** — versão final usando `tar czf backend-package.tar.gz -C backend src package.json package-lock.json tsconfig.json`, eliminando a abordagem complexa com cp para /tmp
+
+### Exigências do usuário durante a etapa
+- Verificar cada run real do GitHub Actions via API, não assumir sucesso
+- Não considerar etapa concluída sem todos os 4 jobs verdes no GitHub web
+- Conferir hash local = remoto após cada push
+
+### Validação final
+- Run #13 do GitHub Actions: `conclusion: success`
+- 4/4 jobs verdes: test ✅, build ✅, deploy ✅, notify ✅
+- Hash confirmado: local `54164fa` = remoto `54164fa`
+- Release `v1.0.0-ci` criada com 3 artifacts
+
+---
+
+## Etapa 6 — Documentação Final (2026-04-06)
+
+**Pedido do usuário:**
+- Criar `README.md` na raiz com: objetivo, funcionalidades, arquitetura, pastas, como rodar, como testar, testes, CI/CD, observações
+- Atualizar `docs/devlog.md`, `docs/ia-prompts.md`, `docs/estrutura-do-projeto.md`
+- Foco em clareza para o professor testar sem dificuldade
+- Sem alterar backend, frontend, workflow ou testes
+- 1-2 commits, publicados no remoto
+
+**Resposta da IA:**
+- Criado `README.md` completo com 9 seções: objetivo, funcionalidades, arquitetura, estrutura, como rodar, como testar, testes, CI/CD, observações
+- Atualizado `devlog.md` com registro da validação final da Etapa 5 e da Etapa 6
+- Atualizado `ia-prompts.md` com registro detalhado das correções da Etapa 5 e da Etapa 6
+- Atualizado `estrutura-do-projeto.md` removendo marcadores "a criar" e adicionando `README.md`
+
+**Resultado:** Documentação completa e coerente. Repositório pronto para avaliação.

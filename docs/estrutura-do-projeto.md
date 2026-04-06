@@ -63,11 +63,7 @@ NP1C14/
 │   ├── devlog.md                  # Diário técnico do projeto ✅
 │   └── estrutura-do-projeto.md    # Este arquivo ✅
 │
-└── C14_TESTES_CICD.pdf            # Enunciado da atividade acadêmica
-```
-
-## Pendência
-- `README.md` — documentação principal ainda pendente (será criado em etapa futura)
+└── README.md                      # Documentação principal do projeto ✅
 ```
 
 ## Descrição das Pastas
@@ -84,4 +80,5 @@ NP1C14/
 | `frontend/src/context/` | Estado global (autenticação) |
 | `frontend/src/pages/` | Páginas da aplicação (login, cadastro, cinema) |
 | `frontend/src/components/` | Componentes reutilizáveis (SeatMap, Seat, Screen) |
+| `frontend/src/styles/` | Estilos globais (dark theme premium) |
 | `docs/` | Documentação de uso de IA e decisões do projeto |
