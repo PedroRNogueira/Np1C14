@@ -249,37 +249,18 @@ Pipeline CI/CD funcional com 4/4 jobs verdes: test ✅, build ✅, deploy ✅, n
 
 ---
 
-## 2026-04-06 — Etapa 5: CI/CD com GitHub Actions
+## 2026-04-06 — Ajustes da Etapa 5: Release e permissões
 
-### Pipeline criado
-- **`.github/workflows/ci-cd.yml`** — 4 jobs com paralelismo, geração de artifacts, release automatizado e notificação por webhook
+### Permissões do workflow
+- Adicionado `permissions: contents: write` no topo do workflow para `GITHUB_TOKEN` ter acesso de criar releases
+- Sem essa permissão, o step `Create GitHub Release` falhava com `Resource not accessible by integration`
 
-### Jobs
-| Job | Paralelismo | Dependências | Descrição |
-|-----|-------------|-------------|-----------|
-| `test` | roda em paralelo com `build` | nenhuma | Instala deps do backend, roda 20 testes unitários com coverage, gera artifact `test-results` |
-| `build` | roda em paralelo com `test` | nenhuma | Build do frontend (`vite build`), validação backend (`tsc --noEmit`), gera artifacts `frontend-dist` e `backend-package` |
-| `deploy` | sequencial | `needs: [test, build]` | Baixa todos os artifacts, cria GitHub Release com tag `v1.0.0-ci` anexo os 3 artifacts |
-| `notify` | sequencial | `needs: [test, build, deploy]` + `if: always()` | Calcula status consolidado (`success`/`failure`/`cancelled`), envia POST para `${{ secrets.WEBHOOK_URL }}` se a secret existir |
+### Correção dos anexos reais da release
+- `test-results/.` e `frontend-dist/.` não apontavam arquivos reais — download-artifact baixa diretórios, mas o release action espera arquivos
+- Solução: baixar artifacts em `release-assets/` com paths explícitos, compactar em `.tar.gz`, anexar apenas arquivos reais:
+  - `release-assets/test-results.tar.gz`
+  - `release-assets/frontend-dist.tar.gz`
+  - `release-assets/backend-package/backend-package.tar.gz`
 
-### Artifacts
-| Artifact | Conteúdo | Job de origem |
-|----------|----------|--------------|
-| `test-results` | Relatório de cobertura do Vitest (HTML + JSON) | test |
-| `frontend-dist` | Output do `vite build` (frontend/dist/) | build |
-| `backend-package` | Backend empacotado sem node_modules | build |
-
-### Configuraçã de Release
-
-- Tag: `v1.0.0-ci`
-- Nome: `v1.0.0-ci - Pipeline Build`
-- Tipo: `prerelease: true`
-- Body: descreve artifacts anexados
-- Arquivos anexados: test-results/. frontend-dist/. backend-package
-
-### Decisões
-- `notify` usa `if: always()` para sempre executar no final
-- Webhook é condicional: `if: env.WEBHOOK_URL != ''` — sem erro se secret não existir
-- Nenhum valor hardcoded (URL, e-mail ou token no código)
-- Test e build rodam em paralelo (satisfaz requisito de paralelismo)
-- Deploy só acontece se test E build passarem
+### Resultado final da Etapa 5
+Release `v1.0.0-ci` criada com sucesso no GitHub, contendo os 3 artifacts em formato `.tar.gz`. Pipeline com 4/4 jobs verdes: `test` ✅, `build` ✅, `deploy` ✅, `notify` ✅.

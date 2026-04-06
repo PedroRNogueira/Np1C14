@@ -63,8 +63,11 @@ NP1C14/
 │   ├── devlog.md                  # Diário técnico do projeto ✅
 │   └── estrutura-do-projeto.md    # Este arquivo ✅
 │
-├── README.md                      # Documentação principal (a criar)
 └── C14_TESTES_CICD.pdf            # Enunciado da atividade acadêmica
+```
+
+## Pendência
+- `README.md` — documentação principal ainda pendente (será criado em etapa futura)
 ```
 
 ## Descrição das Pastas
