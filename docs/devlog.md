@@ -134,3 +134,50 @@ Todos publicados em `origin/main` com hashes verificados.
 
 ### Resultado
 API REST com 6 rotas funcionando. 20 testes unitários passando.
+
+---
+
+## 2026-04-06 — Etapa 4: Frontend Base + Integração com Backend
+
+### Criado
+- **`frontend/index.html`** — HTML base com import do main.tsx
+- **`frontend/package.json`** — React 18 + Vite + TypeScript
+- **`frontend/tsconfig.json`** — TS com JSX react-jsx
+- **`frontend/vite.config.ts`** — Vite porta 5173, proxy `/api` -> `localhost:3001`
+- **`frontend/src/main.tsx`** — Entry point React
+- **`frontend/src/App.tsx`** — Roteamento simples por estado (login/register/cinema)
+- **`frontend/src/api/client.ts`** — Fetch wrapper centralizado para todas as 6 rotas
+- **`frontend/src/context/AuthContext.tsx`** — Estado de autenticação + localStorage
+- **`frontend/src/pages/LoginPage.tsx`** — Tela de login com card escuro, campos username/password, botão vermelho
+- **`frontend/src/pages/RegisterPage.tsx`** — Tela de cadastro com mesmo padrão visual
+- **`frontend/src/pages/CinemaPage.tsx`** — Tela principal: header, botão ticket, SeatMap, Screen, legenda
+- **`frontend/src/components/SeatMap.tsx`** — Grid 6×8 de poltronas por fileira
+- **`frontend/src/components/Seat.tsx`** — Poltrona individual com 3 estados visuais
+- **`frontend/src/components/Screen.tsx`** — Faixa "TELA" com gradiente e glow
+- **`frontend/src/styles/global.css`** — Dark theme premium: variáveis CSS, vermelho primário
+
+### Referência Visual
+A estética do projeto foi inspirada em uma referência visual enviada pelo usuário (card escuro centralizado, botão vermelho, assentos arredondados, tela estilizada). A referência foi usada **apenas como base estética**. Elementos que não fazem parte do escopo do projeto foram removidos: VIP, estrelas, preço, filme específico, IMAX, duração, lembrar-me, forgot password, metadados de sessão.
+
+### Ajuste do Fluxo de Reserva
+**Problema:** Fluxo original de `handleSeatClick` tinha comportamento inconsistente — clicar em outra poltrona livre enquanto uma estava selecionada reservava automaticamente a anterior sem confirmação clara.
+**Correção:** Nova lógica:
+- Poltrona ocupada → não selecionável
+- Sem ticket → bloqueia com mensagem de erro
+- Clicar em poltrona livre → apenas seleciona visualmente
+- Clicar na mesma poltrona selecionada → confirma a reserva
+- Clicar em outra poltrona livre → muda a seleção, não reserva automaticamente
+- Após reserva → limpa seleção, atualiza poltronas, atualiza ticket, mostra mensagem
+
+### Commits da Etapa 4
+
+| Hash | Mensagem |
+|------|----------|
+| `627c0cc` | `feat(frontend-base): cria estrutura inicial do frontend` |
+| `bb26f77` | `feat(auth-ui): adiciona telas de login e cadastro com integração de API` |
+| `fcde3b1` | `feat(cinema-ui): adiciona tela da sala e componentes visuais` |
+| `ee440c1` | `fix(cinema-ui): melhora fluxo de reserva e estilos do SeatMap` + docs |
+| `0c786ce` | `fix(cinema-ui): ajusta fluxo de selecao e reserva de poltronas` |
+
+### Resultado
+Frontend completo integrado com backend. Fluxo end-to-end: cadastro → login → pegar ticket → selecionar poltrona → reservar. Dark theme premium publicado no GitHub.
