@@ -11,8 +11,11 @@ NP1C14/
 │
 ├── backend/                       # Backend — Node.js + Express + TypeScript
 │   ├── src/
-│   │   ├── index.ts               # Entry point, servidor Express (a criar)
-│   │   ├── routes/                # Rotas HTTP (a criar)
+│   │   ├── index.ts               # Entry point, servidor Express ✅
+│   │   ├── routes/                # Rotas HTTP ✅
+│   │   │   ├── auth.routes.ts     # Cadastro e login ✅
+│   │   │   ├── ticket.routes.ts   # Claim e status de ticket ✅
+│   │   │   └── seat.routes.ts     # Listagem e reserva de poltronas ✅
 │   │   ├── services/              # Regras de negócio (implementado)
 │   │   │   ├── auth.service.ts    # Cadastro e login ✅
 │   │   │   ├── ticket.service.ts  # Claim e status de ticket ✅

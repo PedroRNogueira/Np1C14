@@ -104,3 +104,33 @@
 | `4766eb1` | `feat(seat): implementa listagem, reserva e testes unitários` |
 
 Todos publicados em `origin/main` com hashes verificados.
+
+---
+
+## 2026-04-06 — Etapa 3: Backend HTTP (Rotas Express)
+
+### Criado
+- **`backend/src/routes/auth.routes.ts`** — POST `/api/auth/register` e POST `/api/auth/login`
+- **`backend/src/routes/ticket.routes.ts`** — GET `/api/ticket/status` e POST `/api/ticket/claim`
+- **`backend/src/routes/seat.routes.ts`** — GET `/api/seats` e POST `/api/seats/:id/reserve`
+- **`backend/src/index.ts`** — servidor Express na porta 3001, CORS, JSON parsing, montagem de rotas
+
+### Status codes
+- Register: 201 criado, 400 validação, 409 duplicado
+- Login: 200 sucesso, 401 credenciais inválidas
+- Ticket status: 200 sempre
+- Ticket claim: 201 criado, 400 já tem ticket, 404 user não existe
+- Seats list: 200 sempre (público)
+- Seat reserve: 200 sucesso, 400 sem ticket/ocupada, 404 user ou seat não existe
+
+### Commits da Etapa 3
+
+| Hash | Mensagem |
+|------|----------|
+| `590822b` | `feat(auth-routes): adiciona rotas de cadastro e login` |
+| `f94ed55` | `feat(ticket-routes): adiciona rotas de claim e status de ticket` |
+| `76ac940` | `feat(seat-routes): adiciona rotas de listagem e reserva de poltronas` |
+| `36ec9d2` | `feat(server): adiciona servidor express e integração das rotas` |
+
+### Resultado
+API REST com 6 rotas funcionando. 20 testes unitários passando.

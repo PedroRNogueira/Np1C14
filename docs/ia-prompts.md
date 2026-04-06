@@ -134,3 +134,21 @@
 - Push com `--force-with-lease` — hashes local e remoto verificados e iguais
 
 **Resultado:** 20 testes passando. 4 commits publicados e visíveis no GitHub web.
+
+---
+
+## Etapa 3 — Backend HTTP (Rotas Express) (2026-04-06)
+
+**Pedido do usuário:**
+- Criar rotas HTTP para auth, ticket e seat
+- Criar servidor Express integrado
+- Manter simples, sem auth complexa, sem frontend nesta etapa
+
+**Resposta da IA:**
+- Criou `auth.routes.ts`: POST `/api/auth/register` (201/400/409), POST `/api/auth/login` (200/401)
+- Criou `ticket.routes.ts`: GET `/api/ticket/status` (200), POST `/api/ticket/claim` (201/400/404)
+- Criou `seat.routes.ts`: GET `/api/seats` (200), POST `/api/seats/:id/reserve` (200/400/404)
+- Criou `index.ts`: Express na porta 3001 com CORS e JSON parsing
+- 4 commits separados, todos publicados no remoto com verificação de hash
+
+**Resultado:** API REST funcional. 6 rotas expostas. 20 testes ainda passando.
