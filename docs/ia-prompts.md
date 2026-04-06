@@ -203,13 +203,6 @@
 - Artifacts: `test-results` (coverage), `frontend-dist` (vite build), `backend-package` (backend sem node_modules)
 - Gerou e versionou `backend/package-lock.json` e `frontend/package-lock.json` para `npm ci`
 
-**Correções aplicadas durante a etapa (registradas em iterações separadas):**
-
-1. *Import incorreto* (`RegisterPage.tsx` importava `register` em vez de `registerReq`) — falha no build do frontend
-2. *Empacotamento do backend* — `tar` com `--exclude` dentro de `backend/` falhava no runner. Solução: copiar arquivos para `/tmp/backend-pkg/` e gerar tar sem excludes. Aplicado em múltiplos commits até estabilizar
-3. *Permissão da release* — erro `Resource not accessible by integration`. Adicionado `permissions: contents: write` no topo do workflow
-4. *Anexos da release* — paths como `test-results/.` não apontavam arquivos. Solução: baixar em `release-assets/`, compactar em `.tar.gz`, anexar arquivos reais
-
 **Exigências do usuário durante a etapa:**
 - Verificar cada run real do GitHub Actions via API, não assumir sucesso
 - Não considerar etapa concluída sem todos os 4 jobs verdes no GitHub web
@@ -232,11 +225,6 @@
 4. **Anexos da release** — paths como `test-results/.` não apontavam arquivos. Solução: baixar em `release-assets/`, compactar em `.tar.gz`, anexar arquivos reais
 
 5. **Simplificação do tar do backend** — versão final usando `tar czf backend-package.tar.gz -C backend src package.json package-lock.json tsconfig.json`, eliminando a abordagem complexa com cp para /tmp
-
-### Exigências do usuário durante a etapa
-- Verificar cada run real do GitHub Actions via API, não assumir sucesso
-- Não considerar etapa concluída sem todos os 4 jobs verdes no GitHub web
-- Conferir hash local = remoto após cada push
 
 ### Validação final
 - Run #13 do GitHub Actions: `conclusion: success`
