@@ -170,3 +170,16 @@ Para configurar a notificação, crie um secret `WEBHOOK_URL` nas configuraçõe
 - **Sem autenticação complexa**: não há JWT, tokens ou Bearer auth — login retorna `{ id, username }` diretamente
 - **Sem banco de dados**: persistência em memória com salva em `data.json`
 - **Foco acadêmico**: este projeto foi criado como trabalho de CI/CD, priorizando demonstração de pipeline funcional sobre robustez de produção
+
+## Uso de IA
+
+Este projeto foi desenvolvido com apoio de Inteligência Artificial (Claude, da Anthropic) como ferramenta de suporte ao desenvolvimento. A IA atuou nas seguintes áreas:
+
+- **Arquitetura**: definição da estrutura de pastas, tecnologias utilizadas e divisão de responsabilidades entre frontend e backend
+- **Implementação**: geração de código dos services, rotas Express, componentes React, integração entre camadas
+- **Organização**: estruturação de commits pequenos, documentação contínua e histórico de decisões técnicas
+- **Documentação**: registro de prompts utilizados, diário técnico de desenvolvimento e estrutura do projeto
+
+Todo o código foi revisado manualmente antes de cada commit. Os prompts, respostas da IA e histórico completo das interações estão documentados em `docs/ia-prompts.md`.
+
+A IA foi utilizada como ferramenta de apoio — não como substituição da validação acadêmica. Todas as funcionalidades, testes e decisões de projeto foram validadas e aprovadas manualmente pelos autores.
