@@ -198,10 +198,21 @@
 - Commits separados por responsabilidade, publicados no remoto
 
 **Resposta da IA:**
-- Criou `.github/workflows/ci-cd.yml` com 4 jobs: test (20 testes backend + coverage), build (vite build + tsc --noEmit), deploy (GitHub Release com artifacts), notify (webhook condicional)
-- Gerou e versionou `backend/package-lock.json` e `frontend/package-lock.json`
-- Atualizou `docs/devlog.md` com detalhes do pipeline, jobs, artifacts e decisoes
-- Atualizou `docs/ia-prompts.md` com registro completo da etapa
-- Atualizou `docs/estrutura-do-projeto.md` para refletir estado real
+- Criou `.github/workflows/ci-cd.yml` com 4 jobs definidos: test, build, deploy, notify
+- `test` e `build` rodam em paralelo; `deploy` depende de ambos; `notify` com `if: always()`
+- Artifacts: `test-results` (coverage), `frontend-dist` (vite build), `backend-package` (backend sem node_modules)
+- Gerou e versionou `backend/package-lock.json` e `frontend/package-lock.json` para `npm ci`
 
-**Resultado:** Pipeline CI/CD publicado, lock files versionados, documentacao completa.
+**Correções aplicadas durante a etapa (registradas em iterações separadas):**
+
+1. *Import incorreto* (`RegisterPage.tsx` importava `register` em vez de `registerReq`) — falha no build do frontend
+2. *Empacotamento do backend* — `tar` com `--exclude` dentro de `backend/` falhava no runner. Solução: copiar arquivos para `/tmp/backend-pkg/` e gerar tar sem excludes. Aplicado em múltiplos commits até estabilizar
+3. *Permissão da release* — erro `Resource not accessible by integration`. Adicionado `permissions: contents: write` no topo do workflow
+4. *Anexos da release* — paths como `test-results/.` não apontavam arquivos. Solução: baixar em `release-assets/`, compactar em `.tar.gz`, anexar arquivos reais
+
+**Exigências do usuário durante a etapa:**
+- Verificar cada run real do GitHub Actions via API, não assumir sucesso
+- Não considerar etapa concluída sem todos os 4 jobs verdes no GitHub web
+- Conferir hash local = remoto após cada push
+
+**Resultado final:** Pipeline com 4/4 jobs verdes (test, build, deploy, notify). Release `v1.0.0-ci` criada com 3 artifacts. Documentação atualizada em todos os arquivos de `docs/`.

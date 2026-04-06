@@ -186,6 +186,71 @@ Frontend completo integrado com backend. Fluxo end-to-end: cadastro → login �
 
 ## 2026-04-06 — Etapa 5: CI/CD com GitHub Actions
 
+### Criado
+- **`.github/workflows/ci-cd.yml`** — workflow com 4 jobs: test, build, deploy, notify
+
+### Pipeline final funcional
+
+| Job | Paralelismo | Dependências | O que faz |
+|-----|-------------|-------------|-----------|
+| `test` | roda em paralelo com `build` | nenhuma | `npm ci` + `vitest run --coverage` no backend |
+| `build` | roda em paralelo com `test` | nenhuma | `npm run build` no frontend, `tsc --noEmit` no backend, empacotamento do backend |
+| `deploy` | sequencial | `needs: [test, build]` | Baixa artifacts, cria GitHub Release `v1.0.0-ci` com 3 anexos |
+| `notify` | sequencial | `needs: [test, build, deploy]` + `if: always()` | Consolida status, envia webhook condicional |
+
+### Artifacts gerados
+| Artifact | Origem | Formato final na release |
+|----------|--------|------------------------|
+| `test-results` | `backend/coverage/` | `test-results.tar.gz` |
+| `frontend-dist` | `frontend/dist/` | `frontend-dist.tar.gz` |
+| `backend-package` | backend copiado sem node_modules | `backend-package.tar.gz` |
+
+### Correções aplicadas durante a etapa
+Foram necessárias múltiplas iterações até o pipeline ficar 100% verde:
+
+1. **`RegisterPage` import incorreto** (`f26d182`) — importava `register` mas `client.ts` exporta `registerReq`. Causou falha no `tsc -b` do frontend.
+
+2. **Empacotamento do backend com `tar`** (`78787a0`, `a7f7182`, `f8fd687`) — `tar` com `--exclude` dentro de `backend/` falhava no runner Ubuntu (`exit code 1`). Solução final: copiar arquivos necessários para `/tmp/backend-pkg/` e gerar tar a partir dali, sem excludes.
+
+3. **Permissão para criar release** (`49faa85`) — erro `Resource not accessible by integration`. Adicionado `permissions: contents: write` no topo do workflow para o `GITHUB_TOKEN`.
+
+4. **Anexos da release** (`49faa85`) — `test-results/.` e `frontend-dist/.` não apontavam arquivos reais. Solução: baixar artifacts em diretórios explícitos (`release-assets/`), compactar cada um em `.tar.gz` e anexar apenas arquivos existentes.
+
+### Configurações externas necessárias
+- Settings → Actions → General → Workflow permissions → `Read and write permissions`
+- Para notificação funcionar: configurar secret `WEBHOOK_URL` no repositório
+
+### Commits da Etapa 5
+
+| Hash | Mensagem |
+|------|----------|
+| `09585b7` | `build(project): adiciona package-lock para backend e frontend` |
+| `09c2f52` | `docs: atualiza documentação da etapa 5` |
+| `5897388` | `ci(actions): adiciona workflow de test, build, deploy e notify` |
+| `f26d182` | `fix(ci): corrige import incorreto de registro no frontend` |
+| `78787a0` | `fix(ci): corrige empacotamento do backend no workflow` |
+| `a7f7182` | `fix(ci): substitui tar por cp seletivo no empacotamento do backend` |
+| `f8fd687` | `fix(ci): corrige empacotamento do backend com cp + tar simples` |
+| `6ca4075` | `fix(ci): reescreve empacotamento do backend com caminhos absolutos` |
+| `49faa85` | `fix(ci): adiciona permissoes e corrige anexos da release` |
+| `dba8c12` | `docs: corrige documentacao da etapa 5` |
+
+### Resultado final
+Pipeline CI/CD funcional com 4/4 jobs verdes: test ✅, build ✅, deploy ✅, notify ✅. Release `v1.0.0-ci` criada com 3 artifacts anexados.
+
+---
+
+## 2026-04-06 — Pendências futuras
+
+### README principal
+- `README.md` na raiz ainda não foi criado
+- Deve conter: explicação do projeto, como rodar, como testar, como funciona o pipeline, prompts de IA utilizados e avaliação do resultado
+- Será criado em etapa futura
+
+---
+
+## 2026-04-06 — Etapa 5: CI/CD com GitHub Actions
+
 ### Pipeline criado
 - **`.github/workflows/ci-cd.yml`** — 4 jobs com paralelismo, geração de artifacts, release automatizado e notificação por webhook
 
