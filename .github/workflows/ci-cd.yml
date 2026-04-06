@@ -47,13 +47,16 @@ jobs:
         working-directory: backend
       - name: Create backend package
         run: |
-          tar czf ../backend-package.tar.gz \
-            --exclude=node_modules \
-            --exclude=tests \
-            --exclude=.gitignore \
-            --exclude=coverage \
-            .
-        working-directory: backend
+          mkdir -p /tmp/backend-pkg
+          cp -r \
+            src/ \
+            package.json \
+            package-lock.json \
+            tsconfig.json \
+            vitest.config.ts \
+            data.json \
+            /tmp/backend-pkg/
+          tar czf backend-package.tar.gz -C /tmp backend-pkg
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
