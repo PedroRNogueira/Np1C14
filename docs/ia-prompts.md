@@ -181,4 +181,27 @@
 - Criou `Seat` (botão com 3 estados visuais), `SeatMap` (grid 6x8), `Screen` (faixa TELA)
 - Criou `global.css` com dark theme premium: dark background, vermelho primário, inputs estilizados
 
-**Resultado:** Frontend completo integrado com backend. 3 commits publicados no remoto.
+**Resultado:** Frontend completo integrado com backend. 5 commits publicados no remoto.
+
+---
+
+## Etapa 5 — CI/CD com GitHub Actions (2026-04-06)
+
+**Pedido do usuário:**
+- Criar workflow `.github/workflows/ci-cd.yml` com 4 jobs
+- Jobs `test` e `build` em paralelo, `deploy` apos ambos, `notify` com `if: always()`
+- Gerar artifacts: test-results, frontend-dist, backend-package
+- Deploy via GitHub Release com artifacts anexados
+- Notificacao via `${{ secrets.WEBHOOK_URL }}` condicional, sem hardcode
+- Gerar e versionar `package-lock.json` para permitir `npm ci`
+- Atualizar `docs/devlog.md`, `docs/ia-prompts.md`, `docs/estrutura-do-projeto.md`
+- Commits separados por responsabilidade, publicados no remoto
+
+**Resposta da IA:**
+- Criou `.github/workflows/ci-cd.yml` com 4 jobs: test (20 testes backend + coverage), build (vite build + tsc --noEmit), deploy (GitHub Release com artifacts), notify (webhook condicional)
+- Gerou e versionou `backend/package-lock.json` e `frontend/package-lock.json`
+- Atualizou `docs/devlog.md` com detalhes do pipeline, jobs, artifacts e decisoes
+- Atualizou `docs/ia-prompts.md` com registro completo da etapa
+- Atualizou `docs/estrutura-do-projeto.md` para refletir estado real
+
+**Resultado:** Pipeline CI/CD publicado, lock files versionados, documentacao completa.
