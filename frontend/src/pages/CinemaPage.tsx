@@ -53,41 +53,30 @@ export default function CinemaPage() {
   }
 
   async function handleSeatClick(seatId: string) {
+    const seat = seats.find((s) => s.id === seatId);
+    if (!seat || seat.status === "occupied") return;
     if (!user) return;
+    if (!hasTicket) {
+      setErrorMsg("Voce precisa pegar um ticket antes de reservar.");
+      return;
+    }
 
     if (selectedSeat === seatId) {
-      setSelectedSeat(null);
       try {
         await reserveSeatReq(seatId, user.id);
+        setSelectedSeat(null);
         setHasTicket(false);
         setSuccessMsg("Poltrona reservada!");
         loadSeats();
+        if (user) loadTicketStatus();
       } catch {
         setErrorMsg("Erro ao reservar poltrona.");
         loadSeats();
         if (user) loadTicketStatus();
       }
-      return;
-    }
-
-    if (!selectedSeat) {
+    } else {
       setSelectedSeat(seatId);
-      return;
-    }
-
-    if (hasTicket) {
-      setSelectedSeat(null);
-      setSuccessMsg("");
-      try {
-        await reserveSeatReq(seatId, user.id);
-        setHasTicket(false);
-        setSuccessMsg("Poltrona reservada!");
-        loadSeats();
-      } catch {
-        setErrorMsg("Erro ao reservar poltrona.");
-        loadSeats();
-        if (user) loadTicketStatus();
-      }
+      setErrorMsg("");
     }
   }
 
