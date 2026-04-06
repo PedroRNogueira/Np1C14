@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: 22
       - name: Install frontend dependencies
-        run: npm ci
+        run: npm install --prefer-dedupe
         working-directory: frontend
       - name: Build frontend
         run: npm run build
