@@ -45,11 +45,11 @@ jobs:
       - name: Install backend dependencies
         run: npm ci
         working-directory: backend
-      - name: Validate backend
-        run: npx tsc --noEmit
+      - name: Build backend
+        run: npm run build
         working-directory: backend
       - name: Create backend package
-        run: tar czf backend-package.tar.gz -C backend src package.json package-lock.json tsconfig.json
+        run: tar czf backend-package.tar.gz -C backend dist package.json package-lock.json
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:

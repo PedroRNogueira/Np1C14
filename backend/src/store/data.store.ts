@@ -5,7 +5,10 @@ import { StoreData } from "../types/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DATA_FILE = path.resolve(__dirname, "../../data.json");
+const DEFAULT_DATA_FILE = path.resolve(__dirname, "../../data.json");
+const DATA_FILE = process.env.DATA_FILE_PATH
+  ? path.resolve(process.cwd(), process.env.DATA_FILE_PATH)
+  : DEFAULT_DATA_FILE;
 
 const ROWS = ["A", "B", "C", "D", "E", "F"];
 const COLS = 8;
@@ -30,6 +33,7 @@ function loadFromFile(): StoreData | null {
 }
 
 function saveToFile(data: StoreData): void {
+  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 

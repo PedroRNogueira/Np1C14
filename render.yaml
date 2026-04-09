@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cinema-app-backend-pedrornogueira
+    runtime: node
+    plan: free
+    branch: main
+    autoDeployTrigger: commit
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 22
