@@ -7,7 +7,8 @@ NP1C14/
 ├── .git/                          # Repositório Git (raiz)
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml              # Pipeline CI/CD ✅
+│       ├── ci-cd.yml              # Pipeline CI/CD ✅
+│       └── deploy-pages.yml       # Deploy do frontend no GitHub Pages ✅
 │
 ├── backend/                       # Backend — Node.js + Express + TypeScript ✅
 │   ├── src/
@@ -35,6 +36,7 @@ NP1C14/
 │   └── vitest.config.ts           # Configuração Vitest ✅
 │
 ├── frontend/                      # Frontend — React + TypeScript + Vite ✅
+│   ├── .env.example               # Exemplo de VITE_API_URL ✅
 │   ├── src/
 │   │   ├── main.tsx               # Entry point React ✅
 │   │   ├── App.tsx                # Roteamento por estado ✅
@@ -50,6 +52,7 @@ NP1C14/
 │   │   │   ├── SeatMap.tsx        # Grid de poltronas ✅
 │   │   │   ├── Seat.tsx           # Poltrona individual ✅
 │   │   │   └── Screen.tsx         # Faixa "TELA" ✅
+│   │   ├── vite-env.d.ts          # Tipos das variáveis do Vite ✅
 │   │   └── styles/
 │   │       └── global.css         # Estilos globais ✅
 │   ├── index.html                 # Shell HTML ✅
@@ -63,6 +66,8 @@ NP1C14/
 │   ├── devlog.md                  # Diário técnico do projeto ✅
 │   └── estrutura-do-projeto.md    # Este arquivo ✅
 │
+├── render.yaml                    # Blueprint do Render para o backend ✅
+│
 └── README.md                      # Documentação principal do projeto ✅
 ```
 
@@ -70,15 +75,17 @@ NP1C14/
 
 | Pasta | Função |
 |-------|--------|
-| `.github/workflows/` | Pipeline CI/CD do GitHub Actions (test, build, deploy, notify) |
+| `.github/workflows/` | Automação do GitHub Actions para CI/CD e deploy do Pages |
 | `backend/src/types/` | Interfaces TypeScript (User, Ticket, Seat, StoreData) |
 | `backend/src/store/` | Acesso aos dados em memória e persistência em `data.json` |
 | `backend/src/services/` | Regras de negócio puras (testáveis unitariamente) |
 | `backend/src/routes/` | Roteadores Express que chamam os services |
 | `backend/tests/` | Testes unitários dos services com Vitest (20 testes) |
+| `frontend/.env.example` | Exemplo da variável `VITE_API_URL` para produção |
 | `frontend/src/api/` | Camada de comunicação com o backend |
 | `frontend/src/context/` | Estado global (autenticação) |
 | `frontend/src/pages/` | Páginas da aplicação (login, cadastro, cinema) |
 | `frontend/src/components/` | Componentes reutilizáveis (SeatMap, Seat, Screen) |
 | `frontend/src/styles/` | Estilos globais (dark theme premium) |
+| `render.yaml` | Configuração do backend para criação de serviço no Render |
 | `docs/` | Documentação de uso de IA e decisões do projeto |

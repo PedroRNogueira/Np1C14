@@ -250,3 +250,36 @@
 - Atualizado `estrutura-do-projeto.md` removendo marcadores "a criar" e adicionando `README.md`
 
 **Resultado:** Documentação completa e coerente. Repositório pronto para avaliação.
+
+---
+
+## Etapa 7 — Deploy Público em GitHub Pages + Render (2026-04-09)
+
+**Pedido do usuário:**
+- Publicar o frontend em URL pública no GitHub Pages usando GitHub Actions
+- Preparar o backend para deploy no Render usando o repositório público `PedroRNogueira/Np1C14`
+- Fazer o frontend consumir o backend publicado em produção
+- Preparar deploy automático a partir da `main` quando fizer sentido
+- Criar configurações necessárias, atualizar documentação e publicar tudo no GitHub
+- Manter commits pequenos:
+- `feat(frontend-deploy): prepara frontend para github pages`
+- `feat(backend-deploy): prepara backend para render`
+- `docs: documenta deploy público do projeto`
+
+**Resposta da IA:**
+- Ajustou `frontend/vite.config.ts` para funcionar em GitHub project pages com `base: /Np1C14/`
+- Ajustou `frontend/src/api/client.ts` para usar `VITE_API_URL` em produção e `/api` em desenvolvimento
+- Criou `frontend/src/vite-env.d.ts` e `frontend/.env.example`
+- Criou `.github/workflows/deploy-pages.yml` com `configure-pages`, `upload-pages-artifact` e `deploy-pages`
+- Ajustou `backend/package.json` para build real em `dist` e start com `node dist/index.js`
+- Ajustou `backend/src/index.ts` para usar `process.env.PORT`
+- Ajustou `backend/src/store/data.store.ts` para aceitar `DATA_FILE_PATH`
+- Criou `render.yaml` com serviço Node em `backend/`, branch `main`, build e start de produção
+- Atualizou `.github/workflows/ci-cd.yml` para empacotar o backend compilado
+- Atualizou `README.md`, `docs/devlog.md`, `docs/ia-prompts.md` e `docs/estrutura-do-projeto.md`
+
+**Resultado esperado:**
+- frontend pronto para `https://pedrornogueira.github.io/Np1C14/`
+- backend pronto para criação no Render
+- integração pronta via `VITE_API_URL`
+- mínimo manual restante concentrado em `Settings > Pages` e criação do serviço no Render

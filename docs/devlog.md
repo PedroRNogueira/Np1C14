@@ -284,3 +284,39 @@ Release `v1.0.0-ci` criada com sucesso no GitHub, contendo os 3 artifacts em for
 
 ### Resultado
 Documentação completa e coerente. Repositório pronto para avaliação.
+
+---
+
+## 2026-04-09 — Etapa 7: Deploy Público (GitHub Pages + Render)
+
+### Frontend
+- `frontend/vite.config.ts` ajustado para `base: /Np1C14/` em produção
+- `frontend/src/api/client.ts` ajustado para ler `VITE_API_URL`
+- fallback local mantido em desenvolvimento com `/api`
+- criado `frontend/src/vite-env.d.ts` para tipagem de `import.meta.env`
+- criado `frontend/.env.example` com exemplo da URL pública da API
+- criado `.github/workflows/deploy-pages.yml` para deploy automático do frontend no GitHub Pages
+
+### Backend
+- `backend/src/index.ts` ajustado para usar `process.env.PORT`
+- `backend/package.json` ganhou `build`, `check` e `start` voltados ao deploy
+- `backend/src/store/data.store.ts` passou a aceitar `DATA_FILE_PATH` opcional e garante a criação do diretório do arquivo
+- criado `render.yaml` com serviço web Node apontando para `backend/` na branch `main`
+- `ci-cd.yml` atualizado para empacotar o backend compilado (`dist`) para o artifact de release
+
+### Documentação
+- `README.md` atualizado com URLs públicas, fluxo de deploy e ações manuais mínimas
+- `docs/estrutura-do-projeto.md` atualizado com `render.yaml`, workflow do Pages e arquivos de ambiente
+- `docs/ia-prompts.md` atualizado com o registro desta etapa
+
+### Resultado
+Projeto preparado para deploy público completo:
+- frontend pronto para GitHub Pages
+- backend pronto para Render
+- integração frontend ↔ backend pronta via `VITE_API_URL`
+- auto deploy do frontend preparado a partir da `main`
+
+### Dependências manuais remanescentes
+- confirmar `Settings > Pages` com fonte `GitHub Actions`
+- criar o serviço no Render usando o repositório público
+- confirmar a URL final do backend e ajustar `VITE_API_URL` apenas se necessário

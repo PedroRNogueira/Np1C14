@@ -4,182 +4,163 @@ Sistema web simples de reserva de poltronas para cinema, desenvolvido como ativi
 
 ## Funcionalidades
 
-- **Cadastro e login** de usuários (autenticação simplificada, sem tokens)
-- **Sistema de ticket**: para reservar uma poltrona, é necessário pegar um ticket primeiro
-- **Mapa da sala**: visualização interativa das 48 poltronas (6 fileiras × 8 colunas)
-- **Reserva de poltrona**: selecione e confirme uma poltrona livre — o ticket é consumido automaticamente
-- **Estado visual**: poltronas livres (verde), ocupadas (vermelho) e selecionadas (amarelo)
+- Cadastro e login de usuários
+- Claim de ticket antes da reserva
+- Mapa interativo com 48 poltronas
+- Reserva de poltrona com consumo automático do ticket
+- Persistência simples em `backend/data.json`
+- O arquivo é criado automaticamente no backend se ainda não existir
 
 ## Arquitetura
 
-| Camada | Tecnologia | Porta |
-|--------|-----------|-------|
-| Frontend | React + TypeScript + Vite | 5173 |
-| Backend | Node.js + Express + TypeScript | 3001 |
-| Persistência | Memória + arquivo `data.json` | — |
-| Testes | Vitest com coverage-v8 | — |
-| CI/CD | GitHub Actions | — |
+| Camada | Tecnologia | Ambiente local | Produção |
+|--------|------------|----------------|----------|
+| Frontend | React + TypeScript + Vite | `http://localhost:5173` | GitHub Pages |
+| Backend | Node.js + Express + TypeScript | `http://localhost:3001` | Render |
+| Persistência | arquivo JSON | `backend/data.json` | `backend/data.json` gerado ou reutilizado em runtime |
+| Automação | GitHub Actions | CI/CD + Pages deploy | CI/CD + Pages deploy |
 
-O frontend se comunica com o backend via API REST (6 rotas). Não há banco de dados: os dados são mantidos em memória e persistidos em `backend/data.json`.
+## URLs públicas
 
-## Estrutura do Projeto
+- Frontend publicado: `https://pedrornogueira.github.io/Np1C14/`
+- Backend sugerido no Render: `https://cinema-app-backend-pedrornogueira.onrender.com/api`
+- Se o Render exigir outro nome de serviço, use a URL final dele em `VITE_API_URL`
 
-```
+## Estrutura do projeto
+
+```text
 NP1C14/
-├── .github/workflows/ci-cd.yml   # Pipeline CI/CD (test, build, deploy, notify)
-│
-├── backend/                      # Backend — Node.js + Express + TypeScript
-│   ├── src/
-│   │   ├── index.ts              # Servidor Express (porta 3001)
-│   │   ├── routes/               # Rotas HTTP (auth, ticket, seat)
-│   │   ├── services/             # Regras de negócio puras
-│   │   ├── store/                # Persistência em memória + data.json
-│   │   └── types/                # Interfaces TypeScript
-│   └── tests/                    # Testes unitários com Vitest (20 testes)
-│
-├── frontend/                     # Frontend — React + TypeScript + Vite
-│   ├── src/
-│   │   ├── main.tsx              # Entry point
-│   │   ├── App.tsx               # Roteamento por estado
-│   │   ├── api/                  # Camada de comunicação com backend
-│   │   ├── components/           # SeatMap, Seat, Screen
-│   │   ├── context/              # Estado de autenticação
-│   │   ├── pages/                # Login, Cadastro, Cinema
-│   │   └── styles/               # Estilos globais (dark theme)
-│   └── index.html                # HTML base
-│
-└── docs/                         # Documentação do projeto
-    ├── devlog.md                 # Diário técnico
-    ├── ia-prompts.md             # Registro de prompts de IA
-    └── estrutura-do-projeto.md   # Descrição das pastas
+|-- .github/workflows/
+|   |-- ci-cd.yml
+|   `-- deploy-pages.yml
+|-- backend/
+|   |-- src/
+|   |-- tests/
+|   |-- data.json
+|   |-- package.json
+|   `-- tsconfig.json
+|-- frontend/
+|   |-- src/
+|   |-- .env.example
+|   |-- package.json
+|   `-- vite.config.ts
+|-- docs/
+|   |-- devlog.md
+|   |-- estrutura-do-projeto.md
+|   `-- ia-prompts.md
+|-- render.yaml
+`-- README.md
 ```
 
-### Detalhe das pastas
-
-| Pasta | Função |
-|-------|--------|
-| `.github/workflows/` | Workflow do GitHub Actions com 4 jobs: test, build, deploy, notify |
-| `backend/src/routes/` | Roteadores Express — definem endpoints e chamam os services |
-| `backend/src/services/` | Regras de negócio puras (autenticação, ticket, poltronas) |
-| `backend/src/store/` | Acesso a dados em memória com persistência em `data.json` |
-| `backend/src/types/` | Interfaces TypeScript (User, Ticket, Seat, StoreData) |
-| `backend/tests/` | 20 testes unitários (auth, ticket, seat) com Vitest |
-| `frontend/` | Aplicação React — páginas, componentes, estilos |
-| `frontend/src/api/` | Fetch wrapper centralizado para todas as rotas da API |
-| `frontend/src/components/` | Componentes visuais reutilizáveis (SeatMap, Seat, Screen) |
-| `frontend/src/context/` | Estado global de autenticação com localStorage |
-| `frontend/src/pages/` | Telas da aplicação (Login, Cadastro, Cinema) |
-| `frontend/src/styles/` | Variáveis CSS e estilos globais (dark theme premium) |
-| `docs/` | Documentação: diário técnico, prompts de IA, estrutura |
-
-## Como Rodar
-
-### Pré-requisitos
-
-- Node.js 20+
-- npm
-
-### 1. Instalar dependências do backend
-
-```bash
-cd backend
-npm install
-```
-
-### 2. Iniciar o backend
-
-```bash
-cd backend
-npm run dev
-```
-
-O backend inicia na porta **3001**. Você deve ver: `Servidor rodando na porta 3001`.
-
-### 3. Instalar dependências do frontend (em outro terminal)
-
-```bash
-cd frontend
-npm install
-```
-
-### 4. Iniciar o frontend
-
-```bash
-cd frontend
-npm run dev
-```
-
-O frontend inicia na porta **5173** e abre automaticamente no navegador. O Vite configura um proxy de `/api` para `localhost:3001`, então não é necessário configurar CORS.
-
-### 5. Acessar
-
-Abra **http://localhost:5173** no navegador.
-
-## Como Testar a Aplicação
-
-Siga o fluxo completo:
-
-1. **Cadastre um usuário**: clique em "Criar Conta", digite username e senha, clique em "Cadastrar"
-2. **Faça login**: voltará para a tela de login, use as mesmas credenciais
-3. **Pegue um ticket**: na tela da sala, clique em **"Pegar Ticket"**. O botão mudará para "Ticket ativo"
-4. **Reserve uma poltrona**:
-   - Clique em uma poltrona **verde** (livre) — ela fica amarela (selecionada)
-   - Clique na **mesma poltrona** novamente para confirmar a reserva
-   - A poltrona fica **vermelha** (ocupada)
-5. **Verifique o consumo do ticket**: o botão voltará a "Pegar Ticket" — o ticket foi consumido
-6. **Tente reservar outra poltrona sem ticket**: você receberá a mensagem **"Você precisa de um ticket ativo para reservar uma poltrona"**
-7. **Comportamento esperado**: poltronas ocupadas não podem ser selecionadas; é impossível reservar a mesma poltrona duas vezes
-
-Para testar com outro usuário, faça logout, cadastre-se novamente e tente interagir com as poltronas.
-
-## Testes Unitários
+## Como rodar localmente
 
 ### Backend
 
-20 testes unitários cobrindo os 3 services:
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+Backend local: `http://localhost:3001`
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend local: `http://localhost:5173`
+
+Em desenvolvimento, o Vite continua usando proxy de `/api` para `http://localhost:3001`.
+
+## Como publicar o frontend no GitHub Pages
+
+O repositório já ficou preparado com o workflow [`.github/workflows/deploy-pages.yml`](/c:/Users/petru/Desktop/NP1C14/.github/workflows/deploy-pages.yml), que publica automaticamente a pasta `frontend/dist` no GitHub Pages a partir da `main`.
+
+### O que foi ajustado
+
+- `frontend/vite.config.ts` usa `base: /Np1C14/` em produção
+- o frontend lê `VITE_API_URL` para apontar para a API publicada
+- em desenvolvimento, o fallback continua sendo `/api`
+- o workflow usa `configure-pages`, `upload-pages-artifact` e `deploy-pages`
+
+### Configuração mínima no GitHub
+
+1. Acesse `Settings > Pages`.
+2. Em `Build and deployment`, deixe a fonte como `GitHub Actions`.
+3. Se a URL final do backend for diferente da sugerida neste README, configure a variável de repositório `VITE_API_URL` em `Settings > Secrets and variables > Actions > Variables`.
+4. Depois disso, basta fazer push na `main` ou executar manualmente o workflow `Deploy Frontend to GitHub Pages`.
+
+## Como publicar o backend no Render
+
+O repositório já ficou preparado com [`render.yaml`](/c:/Users/petru/Desktop/NP1C14/render.yaml) para facilitar a criação do serviço a partir do GitHub.
+
+### Configuração preparada
+
+- Nome sugerido do serviço: `cinema-app-backend-pedrornogueira`
+- Root directory: `backend`
+- Build command: `npm ci && npm run build`
+- Start command: `npm run start`
+- Branch: `main`
+- Porta: fornecida pela plataforma via `process.env.PORT`
+- Variáveis de ambiente obrigatórias: nenhuma
+- Variável opcional: `DATA_FILE_PATH` para mover o `data.json` para outro caminho
+
+### Passo manual mínimo no Render
+
+1. No Render, crie um novo serviço Web a partir do repositório `PedroRNogueira/Np1C14`.
+2. Se o Render detectar o `render.yaml`, confirme a criação do blueprint.
+3. Se o nome sugerido estiver disponível, mantenha `cinema-app-backend-pedrornogueira`.
+4. Após o primeiro deploy, confirme a URL pública do serviço.
+5. Se a URL final não for `https://cinema-app-backend-pedrornogueira.onrender.com/api`, atualize `VITE_API_URL` no GitHub e rode novamente o deploy do Pages.
+
+## Como configurar a URL do backend no frontend
+
+O frontend já suporta `VITE_API_URL`.
+
+- Exemplo local de referência: [`frontend/.env.example`](/c:/Users/petru/Desktop/NP1C14/frontend/.env.example)
+- Valor esperado em produção: `https://<seu-servico-render>.onrender.com/api`
+- Lugar recomendado no GitHub: `Settings > Secrets and variables > Actions > Variables`
+
+Comportamento atual:
+
+- desenvolvimento: usa `/api` e o proxy do Vite
+- produção: usa `VITE_API_URL` quando configurada
+- produção sem variável: usa a URL sugerida do serviço Render definida no código
+
+## Persistência de dados no Render
+
+O backend continua usando `backend/data.json`. Isso funciona normalmente no ambiente do serviço durante a execução do processo.
+
+Observação importante:
+
+- sem disco persistente no Render, o conteúdo do arquivo pode ser perdido em reinícios ou novos deploys
+- se você precisar persistência entre deploys, o código já aceita `DATA_FILE_PATH` para apontar o arquivo para um caminho persistente configurado na plataforma
+
+## CI/CD
+
+O repositório passa a ter dois fluxos complementares:
+
+- [`ci-cd.yml`](/c:/Users/petru/Desktop/NP1C14/.github/workflows/ci-cd.yml): testes, build e release de artefatos
+- [`deploy-pages.yml`](/c:/Users/petru/Desktop/NP1C14/.github/workflows/deploy-pages.yml): deploy automático do frontend no GitHub Pages
+
+## Ações manuais mínimas que ainda dependem de você
+
+- confirmar `GitHub Actions` em `Settings > Pages`
+- criar o serviço do backend no Render a partir do repositório
+- conferir a URL final do backend no Render
+- preencher `VITE_API_URL` no GitHub apenas se a URL do Render ficar diferente da sugerida
+
+## Testes
 
 ```bash
 cd backend
 npm test
 ```
 
-Distribuição: 7 auth, 6 ticket, 7 seat. Todos passando (~340ms).
-
-### Frontend
-
-Não há testes unitários no frontend no escopo atual desta atividade.
-
-## CI/CD
-
-O workflow `.github/workflows/ci-cd.yml` executa 4 jobs a cada push em `main`:
-
-| Job | O que faz |
-|-----|-----------|
-| **test** | Instala deps do backend e roda 20 testes com Vitest + coverage |
-| **build** | Build do frontend (Vite), validação TypeScript do backend, empacotamento |
-| **deploy** | Cria um GitHub Release (`v1.0.0-ci`) com 3 artifacts anexados |
-| **notify** | Envia notificação via webhook (`WEBHOOK_URL`), roda sempre (`if: always()`) |
-
-Os jobs `test` e `build` rodam em paralelo. `deploy` espera ambos concluírem. `notify` roda independente do resultado.
-
-Para configurar a notificação, crie um secret `WEBHOOK_URL` nas configurações do repositório.
-
-## Observações
-
-- **Sem pagamento real**: o botão de "pagamento" não faz parte do escopo
-- **Sem autenticação complexa**: não há JWT, tokens ou Bearer auth — login retorna `{ id, username }` diretamente
-- **Sem banco de dados**: persistência em memória com salva em `data.json`
-- **Foco acadêmico**: este projeto foi criado como trabalho de CI/CD, priorizando demonstração de pipeline funcional sobre robustez de produção
-
 ## Uso de IA
 
-Este projeto foi desenvolvido com apoio de Inteligência Artificial (Claude, da Anthropic) como ferramenta de suporte ao desenvolvimento. A IA atuou nas seguintes áreas:
-
-- **Arquitetura**: definição da estrutura de pastas, tecnologias utilizadas e divisão de responsabilidades entre frontend e backend
-- **Implementação**: geração de código dos services, rotas Express, componentes React, integração entre camadas
-- **Organização**: estruturação de commits pequenos, documentação contínua e histórico de decisões técnicas
-- **Documentação**: registro de prompts utilizados, diário técnico de desenvolvimento e estrutura do projeto
-
-Todo o código foi revisado manualmente antes de cada commit. Os prompts, respostas da IA e histórico completo das interações estão documentados em `docs/ia-prompts.md`.
-
-A IA foi utilizada como ferramenta de apoio — não como substituição da validação acadêmica. Todas as funcionalidades, testes e decisões de projeto foram validadas e aprovadas manualmente pelos autores.
+Este projeto foi desenvolvido com apoio de IA como ferramenta de suporte para arquitetura, implementação, documentação e organização dos commits. O histórico do trabalho está em [`docs/ia-prompts.md`](/c:/Users/petru/Desktop/NP1C14/docs/ia-prompts.md).
