@@ -1,4 +1,13 @@
-const BASE_URL = "/api";
+const DEFAULT_PRODUCTION_API_URL = "https://cinema-app-backend-pedrornogueira.onrender.com/api";
+
+function normalizeBaseUrl(url: string): string {
+  return url.replace(/\/$/, "");
+}
+
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+const BASE_URL = normalizeBaseUrl(
+  configuredApiUrl || (import.meta.env.DEV ? "/api" : DEFAULT_PRODUCTION_API_URL),
+);
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
