@@ -283,3 +283,28 @@
 - backend pronto para criação no Render
 - integração pronta via `VITE_API_URL`
 - mínimo manual restante concentrado em `Settings > Pages` e criação do serviço no Render
+
+---
+
+## Etapa 7.1 — Verificação real do estado publicado (2026-04-09)
+
+**Pedido do usuário:**
+- Verificar o estado real do projeto no GitHub web e nos workflows
+- Confirmar se o frontend está pronto para Pages e se o backend está pronto para Render
+- Confirmar se `VITE_API_URL` é realmente necessária agora
+- Corrigir tudo o que for interno ao repositório sem inventar URL externa
+
+**Resposta da IA:**
+- Validou `git status`, hash local/remoto e conteúdo dos workflows
+- Validou que o frontend builda sem `VITE_API_URL` e mantém fallback local em desenvolvimento
+- Validou que o backend builda e passa nos testes
+- Validou via GitHub Actions API que o workflow `CI/CD Pipeline` mais recente passou e o workflow `Deploy Frontend to GitHub Pages` falhou no step `Configure GitHub Pages`
+- Validou externamente que o Pages ainda retorna `404`
+- Validou externamente que a URL `https://cinema-app-backend-pedrornogueira.onrender.com/api/seats` também retorna `404`
+- Removeu do frontend a URL de produção inferida e não verificada
+- Atualizou `README.md`, `docs/devlog.md` e `frontend/.env.example` para refletirem o estado real
+
+**Resultado:**
+- `VITE_API_URL` não pode receber valor exato com segurança neste momento
+- o build do frontend não depende obrigatoriamente dessa variável
+- a variável passa a ser exigida apenas quando o backend real do Render existir

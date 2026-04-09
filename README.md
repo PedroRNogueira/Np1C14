@@ -22,9 +22,9 @@ Sistema web simples de reserva de poltronas para cinema, desenvolvido como ativi
 
 ## URLs públicas
 
-- Frontend publicado: `https://pedrornogueira.github.io/Np1C14/`
-- Backend sugerido no Render: `https://cinema-app-backend-pedrornogueira.onrender.com/api`
-- Se o Render exigir outro nome de serviço, use a URL final dele em `VITE_API_URL`
+- Frontend esperado após ativar o Pages: `https://pedrornogueira.github.io/Np1C14/`
+- Status real em 2026-04-09: essa URL ainda retorna `404` no GitHub Pages
+- Status real em 2026-04-09: ainda não existe URL pública verificada para o backend no Render
 
 ## Estrutura do projeto
 
@@ -91,7 +91,7 @@ O repositório já ficou preparado com o workflow [`.github/workflows/deploy-pag
 
 1. Acesse `Settings > Pages`.
 2. Em `Build and deployment`, deixe a fonte como `GitHub Actions`.
-3. Se a URL final do backend for diferente da sugerida neste README, configure a variável de repositório `VITE_API_URL` em `Settings > Secrets and variables > Actions > Variables`.
+3. Depois que o backend existir no Render, configure a variável de repositório `VITE_API_URL` em `Settings > Secrets and variables > Actions > Variables`.
 4. Depois disso, basta fazer push na `main` ou executar manualmente o workflow `Deploy Frontend to GitHub Pages`.
 
 ## Como publicar o backend no Render
@@ -114,8 +114,8 @@ O repositório já ficou preparado com [`render.yaml`](/c:/Users/petru/Desktop/N
 1. No Render, crie um novo serviço Web a partir do repositório `PedroRNogueira/Np1C14`.
 2. Se o Render detectar o `render.yaml`, confirme a criação do blueprint.
 3. Se o nome sugerido estiver disponível, mantenha `cinema-app-backend-pedrornogueira`.
-4. Após o primeiro deploy, confirme a URL pública do serviço.
-5. Se a URL final não for `https://cinema-app-backend-pedrornogueira.onrender.com/api`, atualize `VITE_API_URL` no GitHub e rode novamente o deploy do Pages.
+4. Após o primeiro deploy, copie a URL pública real do serviço.
+5. Configure essa URL com `/api` no final em `VITE_API_URL` no GitHub e rode novamente o deploy do Pages.
 
 ## Como configurar a URL do backend no frontend
 
@@ -128,8 +128,8 @@ O frontend já suporta `VITE_API_URL`.
 Comportamento atual:
 
 - desenvolvimento: usa `/api` e o proxy do Vite
-- produção: usa `VITE_API_URL` quando configurada
-- produção sem variável: usa a URL sugerida do serviço Render definida no código
+- produção: usa `VITE_API_URL`
+- produção sem variável: o build funciona, mas as chamadas da API falham de forma explícita até a variável ser preenchida
 
 ## Persistência de dados no Render
 
@@ -151,8 +151,8 @@ O repositório passa a ter dois fluxos complementares:
 
 - confirmar `GitHub Actions` em `Settings > Pages`
 - criar o serviço do backend no Render a partir do repositório
-- conferir a URL final do backend no Render
-- preencher `VITE_API_URL` no GitHub apenas se a URL do Render ficar diferente da sugerida
+- copiar a URL final do backend no Render
+- preencher `VITE_API_URL` no GitHub com essa URL seguida de `/api`
 
 ## Testes
 

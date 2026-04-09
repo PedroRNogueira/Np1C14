@@ -320,3 +320,27 @@ Projeto preparado para deploy público completo:
 - confirmar `Settings > Pages` com fonte `GitHub Actions`
 - criar o serviço no Render usando o repositório público
 - confirmar a URL final do backend e ajustar `VITE_API_URL` apenas se necessário
+
+---
+
+## 2026-04-09 — Verificação real dos deploys públicos
+
+### Validação externa
+- `git status` limpo em `main`
+- hash local e remoto iguais em `9e339507d2b445779c5e367e5d8251022ce00328`
+- workflow `CI/CD Pipeline` no GitHub Actions concluído com `success`
+- workflow `Deploy Frontend to GitHub Pages` no GitHub Actions concluiu com `failure`
+- a falha ocorreu no step `Configure GitHub Pages`
+- `https://pedrornogueira.github.io/Np1C14/` retorna `404`
+- `https://cinema-app-backend-pedrornogueira.onrender.com/api/seats` retorna `404`
+
+### Correção aplicada após a verificação
+- removida a URL de produção não verificada do frontend
+- `frontend/src/api/client.ts` agora exige `VITE_API_URL` em produção, sem quebrar o build
+- `frontend/.env.example` virou placeholder genérico
+- `README.md` atualizado para refletir o estado real publicado e o passo externo necessário
+
+### Conclusão objetiva
+- o frontend está tecnicamente pronto para publicar, mas depende de `Settings > Pages > Source = GitHub Actions`
+- o backend está tecnicamente pronto para publicar, mas depende da criação do serviço no Render
+- a URL final de `VITE_API_URL` ainda não pode ser determinada com segurança antes da criação real do serviço no Render
