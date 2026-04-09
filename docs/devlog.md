@@ -344,3 +344,28 @@ Projeto preparado para deploy público completo:
 - o frontend está tecnicamente pronto para publicar, mas depende de `Settings > Pages > Source = GitHub Actions`
 - o backend está tecnicamente pronto para publicar, mas depende da criação do serviço no Render
 - a URL final de `VITE_API_URL` ainda não pode ser determinada com segurança antes da criação real do serviço no Render
+
+---
+
+## 2026-04-09 — Etapa 8: Ajuste final do backend para Render Node sem Docker
+
+### Problema identificado
+- o backend já compilava e iniciava, mas ainda faltava explicitar no código o bind em `0.0.0.0`
+- a versão de Node usada pelo serviço estava implícita no Render, sem trava no próprio backend
+- a documentação ainda não deixava explícito que o serviço alvo é `Web Service` Node sem Docker
+
+### Ajustes aplicados
+- `backend/package.json` ganhou `engines.node` com faixa compatível de produção para o Render
+- `backend/src/index.ts` passou a bindar em `0.0.0.0` com `process.env.PORT` e fallback local `3001`
+- `render.yaml` foi simplificado para manter o serviço como `type: web`, `runtime: node`, `rootDir: backend`, `buildCommand: npm ci && npm run build` e `startCommand: npm run start`
+- `README.md`, `docs/ia-prompts.md` e `docs/estrutura-do-projeto.md` foram atualizados com o fluxo real do backend no Render
+
+### Validação local obrigatória
+- `npm ci` executado em `backend/`
+- `npm run build` executado em `backend/`
+- `npm run start` executado em `backend/` com resposta `200` em `http://127.0.0.1:3001/api/seats`
+- `npm run start` também validado com `PORT=10000`, retornando `200` em `http://127.0.0.1:10000/api/seats`
+
+### Conclusão
+- backend pronto para `Render Web Service Node` sem Docker
+- único passo manual restante: criar o serviço no painel do Render usando o repositório e confirmar o blueprint

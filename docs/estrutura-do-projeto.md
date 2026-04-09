@@ -66,7 +66,7 @@ NP1C14/
 │   ├── devlog.md                  # Diário técnico do projeto ✅
 │   └── estrutura-do-projeto.md    # Este arquivo ✅
 │
-├── render.yaml                    # Blueprint do Render para o backend ✅
+├── render.yaml                    # Blueprint do Render para Web Service Node sem Docker ✅
 │
 └── README.md                      # Documentação principal do projeto ✅
 ```
@@ -87,5 +87,5 @@ NP1C14/
 | `frontend/src/pages/` | Páginas da aplicação (login, cadastro, cinema) |
 | `frontend/src/components/` | Componentes reutilizáveis (SeatMap, Seat, Screen) |
 | `frontend/src/styles/` | Estilos globais (dark theme premium) |
-| `render.yaml` | Configuração do backend para criação de serviço no Render |
+| `render.yaml` | Configuração do backend para criação de Web Service Node no Render |
 | `docs/` | Documentação de uso de IA e decisões do projeto |

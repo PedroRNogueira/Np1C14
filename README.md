@@ -100,12 +100,16 @@ O repositório já ficou preparado com [`render.yaml`](/c:/Users/petru/Desktop/N
 
 ### Configuração preparada
 
+- Tipo de serviço: `Web Service` com runtime `Node`
+- Docker: não é usado
 - Nome sugerido do serviço: `cinema-app-backend-pedrornogueira`
 - Root directory: `backend`
 - Build command: `npm ci && npm run build`
 - Start command: `npm run start`
 - Branch: `main`
-- Porta: fornecida pela plataforma via `process.env.PORT`
+- Porta pública: `process.env.PORT` fornecida pelo Render
+- Host público: `0.0.0.0`
+- Versão de Node: definida em [`backend/package.json`](/c:/Users/petru/Desktop/NP1C14/backend/package.json) via `engines.node`
 - Variáveis de ambiente obrigatórias: nenhuma
 - Variável opcional: `DATA_FILE_PATH` para mover o `data.json` para outro caminho
 
@@ -137,8 +141,25 @@ O backend continua usando `backend/data.json`. Isso funciona normalmente no ambi
 
 Observação importante:
 
-- sem disco persistente no Render, o conteúdo do arquivo pode ser perdido em reinícios ou novos deploys
+- no Render sem disco persistente, o conteúdo do arquivo pode ser perdido em reinícios, novos deploys ou troca de instância
 - se você precisar persistência entre deploys, o código já aceita `DATA_FILE_PATH` para apontar o arquivo para um caminho persistente configurado na plataforma
+
+## Validação real do backend para produção
+
+Dentro de [`backend/`](/c:/Users/petru/Desktop/NP1C14/backend), foi validado:
+
+- `npm ci`
+- `npm run build`
+- `npm run start`
+- `npm run start` com `PORT=10000` para simular o Render
+
+Resultado:
+
+- `npm run build` gerou `dist/`
+- `npm run start` subiu o servidor compilado com sucesso
+- localmente, sem `PORT`, o backend respondeu em `http://127.0.0.1:3001/api/seats`
+- com `PORT=10000`, o backend respondeu em `http://127.0.0.1:10000/api/seats`
+- isso deixa o backend compatível com Render Web Service Node sem Docker
 
 ## CI/CD
 

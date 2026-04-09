@@ -308,3 +308,26 @@
 - `VITE_API_URL` não pode receber valor exato com segurança neste momento
 - o build do frontend não depende obrigatoriamente dessa variável
 - a variável passa a ser exigida apenas quando o backend real do Render existir
+
+---
+
+## Etapa 8 — Ajuste final do backend para Render sem Docker (2026-04-09)
+
+**Pedido do usuário:**
+- Corrigir o backend para rodar em produção no Render como `Web Service Node`, sem Docker
+- Garantir coerência entre `backend/package.json`, `backend/tsconfig.json`, `backend/src/index.ts` e `render.yaml`
+- Validar de forma real `npm ci`, `npm run build` e `npm run start`
+- Atualizar a documentação do deploy do backend
+
+**Resposta da IA:**
+- Validou o estado real do backend, incluindo scripts, `tsconfig`, `render.yaml` e persistência com `data.json`
+- Adicionou `engines.node` em `backend/package.json`
+- Ajustou `backend/src/index.ts` para bind explícito em `0.0.0.0`
+- Simplificou `render.yaml` para refletir apenas o runtime Node do Render, sem configuração de Docker
+- Executou `npm ci`, `npm run build` e `npm run start` com sucesso
+- Validou também `npm run start` com `PORT=10000`, confirmando compatibilidade com o padrão do Render
+- Atualizou `README.md`, `docs/devlog.md` e `docs/estrutura-do-projeto.md`
+
+**Resultado:**
+- backend pronto para deploy no Render como `Web Service Node` sem Docker
+- persistência por `data.json` mantida, com limitação de perda em reinícios/deploys documentada
