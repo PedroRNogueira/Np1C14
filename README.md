@@ -1,187 +1,435 @@
 # Cinema App
 
-Sistema web simples de reserva de poltronas para cinema, desenvolvido como atividade acadêmica de CI/CD.
+Aplicação web simples de cinema desenvolvida para a atividade de CI/CD.
 
-## Funcionalidades
+O sistema permite que o usuário:
+- faça cadastro
+- realize login
+- pegue um ticket
+- visualize o mapa de poltronas
+- reserve uma poltrona disponível
 
-- Cadastro e login de usuários
-- Claim de ticket antes da reserva
-- Mapa interativo com 48 poltronas
-- Reserva de poltrona com consumo automático do ticket
-- Persistência simples em `backend/data.json`
-- O arquivo é criado automaticamente no backend se ainda não existir
+O projeto foi dividido em frontend e backend, com deploy público para facilitar a validação pelo professor.
 
-## Arquitetura
+---
 
-| Camada | Tecnologia | Ambiente local | Produção |
-|--------|------------|----------------|----------|
-| Frontend | React + TypeScript + Vite | `http://localhost:5173` | GitHub Pages |
-| Backend | Node.js + Express + TypeScript | `http://localhost:3001` | Render |
-| Persistência | arquivo JSON | `backend/data.json` | `backend/data.json` gerado ou reutilizado em runtime |
-| Automação | GitHub Actions | CI/CD + Pages deploy | CI/CD + Pages deploy |
+## O que foi desenvolvido
 
-## URLs públicas
+### Frontend
+O frontend foi desenvolvido com React, TypeScript e Vite.
 
-- Frontend esperado após ativar o Pages: `https://pedrornogueira.github.io/Np1C14/`
-- Status real em 2026-04-09: essa URL ainda retorna `404` no GitHub Pages
-- Status real em 2026-04-09: ainda não existe URL pública verificada para o backend no Render
+A interface foi organizada para atender o fluxo principal da atividade:
+- tela de login
+- tela de cadastro
+- tela principal do cinema
+- exibição do mapa de poltronas
+- ação para pegar ticket
+- ação para reservar poltrona
 
-## Estrutura do projeto
+A aplicação funciona como uma SPA, ou seja, a navegação entre as telas acontece dentro da própria interface, sem rotas públicas separadas como `/login` ou `/register`.
+
+### Backend
+O backend foi desenvolvido com Node.js, Express e TypeScript.
+
+A API foi organizada em três áreas principais:
+- autenticação
+- ticket
+- poltronas
+
+Também foram implementadas regras básicas para o fluxo da aplicação:
+- cadastro de usuário
+- login
+- verificação de ticket
+- geração de ticket
+- listagem de poltronas
+- reserva de poltrona
+
+### CI/CD
+O projeto possui automação com GitHub Actions para:
+- instalação de dependências
+- execução de testes do backend
+- build do frontend
+- build do backend
+- geração de artefatos
+- deploy do frontend no GitHub Pages
+
+### Deploy
+O projeto foi preparado para deploy público em dois serviços:
+- frontend no GitHub Pages
+- backend no Render
+
+---
+
+## Tecnologias utilizadas
+
+### Frontend
+- React
+- TypeScript
+- Vite
+
+### Backend
+- Node.js
+- Express
+- TypeScript
+
+### CI/CD
+- GitHub Actions
+
+### Deploy
+- GitHub Pages
+- Render
+
+---
+
+## URLs públicas do projeto
+
+### Frontend
+```text
+https://pedrornogueira.github.io/Np1C14/
+```
+
+### Backend
+```text
+https://cinema-app-backend-pedrornogueira.onrender.com/api
+```
+
+### Exemplo de rota pública do backend
+```text
+https://cinema-app-backend-pedrornogueira.onrender.com/api/seats
+```
+
+---
+
+## Como acessar o sistema
+
+Para usar a aplicação pela interface web, basta abrir:
 
 ```text
-NP1C14/
-|-- .github/workflows/
-|   |-- ci-cd.yml
-|   `-- deploy-pages.yml
-|-- backend/
-|   |-- src/
-|   |-- tests/
-|   |-- data.json
-|   |-- package.json
-|   `-- tsconfig.json
-|-- frontend/
-|   |-- src/
-|   |-- .env.example
-|   |-- package.json
-|   `-- vite.config.ts
-|-- docs/
-|   |-- devlog.md
-|   |-- estrutura-do-projeto.md
-|   `-- ia-prompts.md
-|-- render.yaml
-`-- README.md
+https://pedrornogueira.github.io/Np1C14/
 ```
+
+Ao abrir o frontend, o usuário verá a tela inicial de login.
+
+A partir dela, é possível:
+- entrar com um usuário existente
+- ir para a tela de cadastro
+- após login bem-sucedido, acessar a tela principal do cinema
+
+---
+
+## Como testar pela interface web
+
+Fluxo recomendado de teste:
+
+1. Abrir o frontend no GitHub Pages
+2. Criar um usuário na tela de cadastro
+3. Fazer login com esse usuário
+4. Verificar a tela principal do cinema
+5. Clicar em **Pegar ticket**
+6. Escolher uma poltrona livre
+7. Confirmar a reserva
+
+Esse é o fluxo principal esperado da aplicação.
+
+---
+
+## Como o frontend conversa com o backend
+
+Em produção, o frontend consome a API pública do backend hospedada no Render.
+
+Base usada pela aplicação em produção:
+
+```text
+https://cinema-app-backend-pedrornogueira.onrender.com/api
+```
+
+Em ambiente local:
+- o frontend roda em `http://localhost:5173`
+- o backend roda em `http://localhost:3001`
+- o Vite faz proxy de `/api` para o backend local
+
+---
+
+## Rotas do backend
+
+Base da API:
+
+```text
+https://cinema-app-backend-pedrornogueira.onrender.com/api
+```
+
+### 1) Autenticação
+
+#### POST `/api/auth/register`
+Cria um novo usuário.
+
+Exemplo de body:
+```json
+{
+  "username": "teste",
+  "password": "123456"
+}
+```
+
+Exemplo de resposta esperada:
+```json
+{
+  "id": "algum-id",
+  "username": "teste"
+}
+```
+
+---
+
+#### POST `/api/auth/login`
+Realiza login com um usuário já cadastrado.
+
+Exemplo de body:
+```json
+{
+  "username": "teste",
+  "password": "123456"
+}
+```
+
+Exemplo de resposta esperada:
+```json
+{
+  "id": "algum-id",
+  "username": "teste"
+}
+```
+
+---
+
+### 2) Ticket
+
+#### GET `/api/ticket/status?userId=ID_DO_USUARIO`
+Verifica se o usuário já possui ticket.
+
+Exemplo:
+```text
+GET /api/ticket/status?userId=123
+```
+
+Exemplo de resposta:
+```json
+{
+  "hasTicket": true
+}
+```
+
+ou
+
+```json
+{
+  "hasTicket": false
+}
+```
+
+---
+
+#### POST `/api/ticket/claim`
+Gera um ticket para o usuário.
+
+Exemplo de body:
+```json
+{
+  "userId": "123"
+}
+```
+
+Exemplo de resposta:
+```json
+{
+  "message": "Ticket claimed"
+}
+```
+
+---
+
+### 3) Poltronas
+
+#### GET `/api/seats`
+Lista todas as poltronas do cinema.
+
+Exemplo:
+```text
+https://cinema-app-backend-pedrornogueira.onrender.com/api/seats
+```
+
+Exemplo de resposta:
+```json
+[
+  {
+    "id": "A1",
+    "row": "A",
+    "number": 1,
+    "status": "free"
+  }
+]
+```
+
+---
+
+#### POST `/api/seats/:id/reserve`
+Reserva uma poltrona pelo seu identificador.
+
+Exemplo:
+```text
+POST /api/seats/A1/reserve
+```
+
+Exemplo de body:
+```json
+{
+  "userId": "123"
+}
+```
+
+Exemplo de resposta:
+```json
+{
+  "message": "Seat reserved"
+}
+```
+
+---
+
+## Ordem recomendada de teste direto pela API
+
+Caso o professor queira validar a aplicação sem usar a interface web, a sequência ideal é:
+
+1. `POST /api/auth/register`
+2. `POST /api/auth/login`
+3. guardar o `id` retornado no login
+4. `GET /api/ticket/status?userId=...`
+5. `POST /api/ticket/claim`
+6. `GET /api/seats`
+7. `POST /api/seats/:id/reserve`
+
+---
 
 ## Como rodar localmente
 
 ### Backend
-
 ```bash
 cd backend
 npm install
 npm run dev
 ```
 
-Backend local: `http://localhost:3001`
+Backend local:
+```text
+http://localhost:3001
+```
+
+---
 
 ### Frontend
-
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend local: `http://localhost:5173`
-
-Em desenvolvimento, o Vite continua usando proxy de `/api` para `http://localhost:3001`.
-
-## Como publicar o frontend no GitHub Pages
-
-O repositório já ficou preparado com o workflow [`.github/workflows/deploy-pages.yml`](/c:/Users/petru/Desktop/NP1C14/.github/workflows/deploy-pages.yml), que publica automaticamente a pasta `frontend/dist` no GitHub Pages a partir da `main`.
-
-### O que foi ajustado
-
-- `frontend/vite.config.ts` usa `base: /Np1C14/` em produção
-- o frontend lê `VITE_API_URL` para apontar para a API publicada
-- em desenvolvimento, o fallback continua sendo `/api`
-- o workflow usa `configure-pages`, `upload-pages-artifact` e `deploy-pages`
-
-### Configuração mínima no GitHub
-
-1. Acesse `Settings > Pages`.
-2. Em `Build and deployment`, deixe a fonte como `GitHub Actions`.
-3. Depois que o backend existir no Render, configure a variável de repositório `VITE_API_URL` em `Settings > Secrets and variables > Actions > Variables`.
-4. Depois disso, basta fazer push na `main` ou executar manualmente o workflow `Deploy Frontend to GitHub Pages`.
-
-## Como publicar o backend no Render
-
-O repositório já ficou preparado com [`render.yaml`](/c:/Users/petru/Desktop/NP1C14/render.yaml) para facilitar a criação do serviço a partir do GitHub.
-
-### Configuração preparada
-
-- Tipo de serviço: `Web Service` com runtime `Node`
-- Docker: não é usado
-- Nome sugerido do serviço: `cinema-app-backend-pedrornogueira`
-- Root directory: `backend`
-- Build command: `npm ci && npm run build`
-- Start command: `npm run start`
-- Branch: `main`
-- Porta pública: `process.env.PORT` fornecida pelo Render
-- Host público: `0.0.0.0`
-- Versão de Node: definida em [`backend/package.json`](/c:/Users/petru/Desktop/NP1C14/backend/package.json) via `engines.node`
-- Variáveis de ambiente obrigatórias: nenhuma
-- Variável opcional: `DATA_FILE_PATH` para mover o `data.json` para outro caminho
-
-### Passo manual mínimo no Render
-
-1. No Render, crie um novo serviço Web a partir do repositório `PedroRNogueira/Np1C14`.
-2. Se o Render detectar o `render.yaml`, confirme a criação do blueprint.
-3. Se o nome sugerido estiver disponível, mantenha `cinema-app-backend-pedrornogueira`.
-4. Após o primeiro deploy, copie a URL pública real do serviço.
-5. Configure essa URL com `/api` no final em `VITE_API_URL` no GitHub e rode novamente o deploy do Pages.
-
-## Como configurar a URL do backend no frontend
-
-O frontend já suporta `VITE_API_URL`.
-
-- Exemplo local de referência: [`frontend/.env.example`](/c:/Users/petru/Desktop/NP1C14/frontend/.env.example)
-- Valor esperado em produção: `https://<seu-servico-render>.onrender.com/api`
-- Lugar recomendado no GitHub: `Settings > Secrets and variables > Actions > Variables`
-
-Comportamento atual:
-
-- desenvolvimento: usa `/api` e o proxy do Vite
-- produção: usa `VITE_API_URL`
-- produção sem variável: o build funciona, mas as chamadas da API falham de forma explícita até a variável ser preenchida
-
-## Persistência de dados no Render
-
-O backend continua usando `backend/data.json`. Isso funciona normalmente no ambiente do serviço durante a execução do processo.
-
-Observação importante:
-
-- no Render sem disco persistente, o conteúdo do arquivo pode ser perdido em reinícios, novos deploys ou troca de instância
-- se você precisar persistência entre deploys, o código já aceita `DATA_FILE_PATH` para apontar o arquivo para um caminho persistente configurado na plataforma
-
-## Validação real do backend para produção
-
-Dentro de [`backend/`](/c:/Users/petru/Desktop/NP1C14/backend), foi validado:
-
-- `npm ci`
-- `npm run build`
-- `npm run start`
-- `npm run start` com `PORT=10000` para simular o Render
-
-Resultado:
-
-- `npm run build` gerou `dist/`
-- `npm run start` subiu o servidor compilado com sucesso
-- localmente, sem `PORT`, o backend respondeu em `http://127.0.0.1:3001/api/seats`
-- com `PORT=10000`, o backend respondeu em `http://127.0.0.1:10000/api/seats`
-- isso deixa o backend compatível com Render Web Service Node sem Docker
-
-## CI/CD
-
-O repositório passa a ter dois fluxos complementares:
-
-- [`ci-cd.yml`](/c:/Users/petru/Desktop/NP1C14/.github/workflows/ci-cd.yml): testes, build e release de artefatos
-- [`deploy-pages.yml`](/c:/Users/petru/Desktop/NP1C14/.github/workflows/deploy-pages.yml): deploy automático do frontend no GitHub Pages
-
-## Ações manuais mínimas que ainda dependem de você
-
-- confirmar `GitHub Actions` em `Settings > Pages`
-- criar o serviço do backend no Render a partir do repositório
-- copiar a URL final do backend no Render
-- preencher `VITE_API_URL` no GitHub com essa URL seguida de `/api`
-
-## Testes
-
-```bash
-cd backend
-npm test
+Frontend local:
+```text
+http://localhost:5173
 ```
+
+---
+
+## Estrutura do projeto
+
+```text
+Np1C14/
+├── backend/
+│   ├── src/
+│   ├── tests/
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   └── package.json
+├── docs/
+└── .github/workflows/
+```
+
+---
+
+## Observações importantes
+
+- O frontend é acessado por uma única URL pública:
+  ```text
+  https://pedrornogueira.github.io/Np1C14/
+  ```
+
+- A navegação entre login, cadastro e cinema acontece dentro da própria aplicação.
+
+- A raiz do backend pode exibir:
+  ```text
+  Cannot GET /
+  ```
+  Isso é normal, porque o backend foi feito para responder nas rotas da API.
+
+- Uma rota pública válida do backend é:
+  ```text
+  https://cinema-app-backend-pedrornogueira.onrender.com/api/seats
+  ```
+
+- Em produção, o frontend utiliza a base do projeto no GitHub Pages:
+  ```text
+  /Np1C14/
+  ```
+
+---
+
+## Automação e pipeline
+
+O projeto foi preparado com GitHub Actions para automatizar as etapas principais de CI/CD.
+
+Entre as tarefas automatizadas estão:
+- instalação de dependências
+- testes do backend
+- build do frontend
+- build do backend
+- geração de artefatos
+- deploy do frontend no GitHub Pages
+
+---
+
+## Resumo para validação do professor
+
+Para validar o projeto da forma mais simples, basta:
+
+1. abrir o frontend:
+   ```text
+   https://pedrornogueira.github.io/Np1C14/
+   ```
+
+2. criar um usuário
+
+3. fazer login
+
+4. pegar um ticket
+
+5. escolher uma poltrona
+
+6. confirmar a reserva
+
+Se preferir validar diretamente a API, pode usar:
+
+```text
+https://cinema-app-backend-pedrornogueira.onrender.com/api/seats
+```
+
+---
 
 ## Uso de IA
 
-Este projeto foi desenvolvido com apoio de IA como ferramenta de suporte para arquitetura, implementação, documentação e organização dos commits. O histórico do trabalho está em [`docs/ia-prompts.md`](/c:/Users/petru/Desktop/NP1C14/docs/ia-prompts.md).
+Este projeto contou com apoio de IA como ferramenta de suporte para:
+- organização do projeto
+- documentação
+- estruturação do fluxo de CI/CD
+- apoio na implementação
+- apoio na revisão do deploy
